@@ -214,7 +214,7 @@
             if(optionsObject.name){
                 selector = 'form[name='+optionsObject.name+']';
             }else{
-                Selector = '#'+optionsObject.id;
+                selector = '#'+optionsObject.id;
             }
 
             //attach a submit event to the form
