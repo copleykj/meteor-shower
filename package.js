@@ -16,7 +16,7 @@ Package.on_test(function (api) {
     api.add_files('js/mesosphere.js', ['client', 'server']);
 
     api.use('session', 'client');
-    api.add_files('tests/email_tests.js', 'client');
+    api.add_files('tests/format_tests.js', 'client');
 
 //    api.use('http', 'server');
 //    api.add_files('tests/router_server_tests.js', 'server');
