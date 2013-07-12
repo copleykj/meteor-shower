@@ -88,11 +88,36 @@
 
                 //transform the data if need be.
                 if(field.transforms){
-
                     fieldValue=transform(fieldValue, field.transforms);
                     formFieldsObject[fieldName]=fieldValue;
                 }
 
+                // check the data format
+                if(field.format) {
+
+                    var fmt=field.format;
+                    if(_.isString(fmt)) {
+                        fmt=Formats[fmt];
+                    }
+
+                    if(!fmt)
+                        console.log("Unknown format:"+field.format);
+                    else {
+                        if( fmt instanceof RegExp) {
+                            // it's a regular expression
+                            if(!fmt.test(fieldValue))
+                                self.addFieldError(fieldName, "Invalid format");
+
+                        } else {
+                            // it's a function
+                            if(!fmt(fieldValue))
+                                self.addFieldError(fieldName, "Invalid format");
+                        }
+                    }
+
+                }
+
+                // check rule sets
                 _(field.rules).each( function( ruleValue, ruleName ) {
                     if(_(fieldValue).isArray()){
                        _(fieldValue).each( function( subValue, key ) {
@@ -171,10 +196,13 @@
         return formFieldsObject;
     };
 
-    var transform = function(fieldValue, transformList){
-        _(transformList).each( function(transformName) {
-            // BUG: if multiple transforms - only last one evaluated
-            fieldValue = Transforms[transformName](fieldValue);
+    var transform = function (fieldValue, transformList) {
+        _(transformList).each(function (transformName) {
+            var t=Transforms[transformName];
+            if (t)
+                fieldValue = t(fieldValue);
+            else
+                console.log("Invalid transform:" + transformName);
         });
         return fieldValue;
     };
