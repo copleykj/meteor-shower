@@ -1,10 +1,20 @@
 (function(root){
     //Local variable declarations
-    var $, _, Meteor, Helpers, Rules, Form, Mesosphere;
+    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats;
 
     //Setup access to jQuery, Underscore and Meteor
     $=root.jQuery; _=root._; Meteor=root.Meteor;
 
+    //Formats
+    Formats = {
+        email: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+        money: /^[\$\€\£\¥]?[-]?[0-9]*[\.]?[0-9]+$/,
+        integer: /^[-]?[0-9]+$/,
+        hex: /^[a-fA-F0-9]+$/,
+        float: /^[-]?[0-9]*[\.]?[0-9]+$/,
+        alphanumeric: /^[a-zA-Z0-9_-]+$/,
+        creditcard: function(val) {}
+    };
 
     //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
@@ -17,10 +27,10 @@
         exactLength: function (fieldValue, ruleValue) {
           return fieldValue.length === ruleValue.exact_length;
         },
-        email: function (fieldValue) {
-          var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-          return re.test(str);
-        },
+//        email: function (fieldValue) {
+//          var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+//          return re.test(str);
+//        },
         maxValue: function(fieldValue, ruleValue){
             return fieldValue <= ruleValue;
         },
@@ -30,12 +40,13 @@
         acceptedFileTypes: function(fieldValue, ruleValue){
             var fileType = fieldValue.FileType;
             return !!ruleValue.indexOf(fileType);
-        },
-        regTest: function(fieldValue, ruleValue){
-            if(_(ruleValue).isRegExp()){
-                return ruleValue.test(fieldValue);
-            }
         }
+//      ,
+//        regTest: function(fieldValue, ruleValue){
+//            if(_(ruleValue).isRegExp()){
+//                return ruleValue.test(fieldValue);
+//            }
+//        }
     };
 
     //Data transformation functions
@@ -234,19 +245,27 @@
 
     Mesosphere.Rules = Rules;
     Mesosphere.Transforms = Transforms;
+    Mesosphere.Formats = Formats;
+
+    Mesosphere.registerFormat = function (name, fn) {
+        if (Mesosphere.Formats[name]) {
+            throw new Error(name + " is already defined as a format.");
+        }
+        Mesosphere.Formats[name] = fn;
+    };
 
     Mesosphere.registerRule = function (name, fn) {
       if (Mesosphere.Rules[name]) {
         throw new Error(name + " is already defined as a rule.");
       }
-      Mesosphere.Rules[name] = testFn;
+      Mesosphere.Rules[name] = fn;
     };
 
     Mesosphere.registerTransform = function (name, fn) {
       if (Mesosphere.Transforms[name]) {
         throw new Error(name + " is already defined as a transform.");
       }
-      Mesosphere.Transforms[name] = testFn;
+      Mesosphere.Transforms[name] = fn;
     };
 
     root.Mesosphere = Mesosphere;
