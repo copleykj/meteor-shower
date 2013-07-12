@@ -17,6 +17,7 @@ Package.on_test(function (api) {
 
     api.use('session', 'client');
     api.add_files('tests/format_tests.js', 'client');
+    api.add_files('tests/rules_tests.js', 'client');
 
 //    api.use('http', 'server');
 //    api.add_files('tests/router_server_tests.js', 'server');
