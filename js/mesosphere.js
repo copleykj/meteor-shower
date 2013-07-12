@@ -1,6 +1,6 @@
 (function(root){
     //Local variable declarations
-    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats;
+    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats, Transforms;
 
     //Setup access to jQuery, Underscore and Meteor
     $=root.jQuery; _=root._; Meteor=root.Meteor;
@@ -84,7 +84,14 @@
             fieldValue = formFieldsObject[fieldName];
 
             //if there is a value we are going to validate it
-            if(_(fieldValue).trim()){
+            if(fieldValue){
+
+                //transform the data if need be.
+                if(field.transforms){
+
+                    fieldValue=transform(fieldValue, field.transforms);
+                    formFieldsObject[fieldName]=fieldValue;
+                }
 
                 _(field.rules).each( function( ruleValue, ruleName ) {
                     if(_(fieldValue).isArray()){
@@ -99,10 +106,8 @@
                             self.addFieldError(fieldName, ruleName);
                     }
                 });
-                //transform the data if need be.
-                if(field.transforms){
-                    transform(fieldValue, fieldName, field.transforms, formFieldsObject);
-                }
+
+
             //otherwise we'll check if it is a required field or required dependently of another field
             }else if(field.required && (field.required === true || formFieldsObject[field.required.dependsOn] == field.required.value)){
                 self.addFieldError(fieldName, "required");
@@ -166,13 +171,15 @@
         return formFieldsObject;
     };
 
-    transform = function(fieldValue, fieldName, transformList, formFieldsObject){
+    var transform = function(fieldValue, transformList){
         _(transformList).each( function(transformName) {
-            formFieldsObject[fieldName] = Transforms[transformName](fieldValue);
+            // BUG: if multiple transforms - only last one evaluated
+            fieldValue = Transforms[transformName](fieldValue);
         });
+        return fieldValue;
     };
 
-    getFormData = function(formElem){
+    var getFormData = function(formElem){
         var formData = $(formElem).serializeArray(), fileInputs = $(formElem).find("input[type=file]");
 
         fileInputs.each(function () {
@@ -191,13 +198,13 @@
         return formData;
     };
 
-    failureCallback = function(erroredFields){
+    var failureCallback = function(erroredFields){
         _(erroredFields).each( function( value, key, errObj ) {
             $("#"+key+"-error").addClass("meso-error").text(value.message);
         });
     };
 
-    successCallback = function(){
+    var successCallback = function(){
         $(".meso-error").text("");
     };
 
