@@ -43,7 +43,7 @@ Mesosphere({
     }});
 
 
-Tinytest.add("min max", function (test) {
+Tinytest.add("min max eq ne rules", function (test) {
 
 
         var validationObject = Mesosphere.rulesForm.validate([

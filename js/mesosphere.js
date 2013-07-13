@@ -42,10 +42,10 @@
     //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
         maxLength: function(fieldValue, ruleValue) {
-            return fieldValue.length <= ruleValue;
+            return fieldValue.length < ruleValue;
         },
         minLength: function(fieldValue, ruleValue) {
-            return fieldValue.length >= ruleValue;
+            return fieldValue.length > ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
           return fieldValue.length === ruleValue;
@@ -58,7 +58,8 @@
             return fieldValue > ruleValue;
         },
         maxValue: function(fieldValue, ruleValue) {
-            return fieldValue <= ruleValue;
+            //TODO:_('2.556').toNumber()
+            return fieldValue < ruleValue;
         },
         equalsValue: function(fieldValue, ruleValue) {
             return fieldValue === ruleValue;
@@ -75,18 +76,26 @@
 
     //Data transformation functions
     Transforms = {
-        trim:function(string){
+        trim:function(string) {
             return _(string).trim();
         },
-        ucfirst:function(string){
-            string = _(string).ltrim();
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        clean:function(string) {
+            return _(string).clean();
         },
-        stripTags:function(string){
+        capitalize:function(string) {
+            return _(string).capitalize();
+        },
+        stripTags:function(string) {
             return _(string).stripTags();
         },
-        escapeHTML:function(string){
+        escapeHTML:function(string) {
             return _(string).escapeHTML();
+        },
+        toUpperCase:function(string) {
+            return string.toUpperCase();
+        },
+        toLowerCase:function(string) {
+            return string.toLowerCase();
         }
     };
 
@@ -98,14 +107,25 @@
     };
 
     Form.prototype.validate = function (formFields){
-        var self = this, result, fieldValue;
+        var self = this, result;
         var formFieldsObject = this.formToObject(formFields);
 
         self.ErroredFields = {};
 
         _(self.fields).each( function( field, fieldName ) {
+
+
+
             //get the current value of the field that we are validating
-            fieldValue = formFieldsObject[fieldName];
+            var fieldValue = formFieldsObject[fieldName];
+
+
+            //TODO: review this condition
+            //  if(field.required && (field.required === true || formFieldsObject[field.required.dependsOn] === field.required.value)){
+            //check if field is required
+            if(field.required === true &&  (_(fieldValue).isUndefined() || fieldValue.trim().length === 0) ) {
+                self.addFieldError(fieldName, "Field is required");
+            }
 
             //if there is a value we are going to validate it
             if(fieldValue){
@@ -120,11 +140,8 @@
                 if(field.format) {
 
                     var fmt=field.format;
-
-                    if(_.isString(fmt)) {
-
+                    if(_.isString(fmt))
                         fmt=Formats[fmt];
-                    }
 
                     if(!fmt)
                         console.log("Unknown format:"+field.format);
@@ -157,12 +174,9 @@
                             self.addFieldError(fieldName, ruleName);
                     }
                 });
-
-
-            //otherwise we'll check if it is a required field or required dependently of another field
-            }else if(field.required && (field.required === true || formFieldsObject[field.required.dependsOn] == field.required.value)){
-                self.addFieldError(fieldName, "required");
             }
+
+
         });
 
         if(_(self.ErroredFields).isEmpty()){
