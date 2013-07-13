@@ -2,6 +2,16 @@
 
 A dual client/server side form data validation and transformation package for **Meteor**
 
+##Features
+
+* Same validations on client and server
+* Clean validation workflow with
+  * Transformations: trim, capitalize
+  * Formats: email, float, boolean, url, creditcard
+  * Rules: min, max, equals
+* Conditional required fields
+* Extensible via api
+
 ##Requirements
 Requirements *should* be taken care of by **Meteorite** if adding Mesosphere as a smart package from **Atmosphere**. Otherwise you will need include the following libraries in your project.
 
@@ -10,6 +20,7 @@ jQuery >= 1.7
 underscore.js >= 1.3.3
 
 underscore.string >= 2.0.0
+
 
 ##Usage
 
@@ -278,4 +289,11 @@ Mesosphere({
             }
         }
     });
+    
+    
+##Contributions
+
+Please built unit tests for any new contributions and ensure all tests pass successfull.
+
+    mrt test-packages ./
     

@@ -1,57 +1,100 @@
 (function(root){
     //Local variable declarations
-    var $, _, Meteor, Helpers, Rules, Form, Mesosphere;
+    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats, Transforms;
 
     //Setup access to jQuery, Underscore and Meteor
     $=root.jQuery; _=root._; Meteor=root.Meteor;
 
+    //Formats
+    Formats = {
+        email: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        money: /^[\$\€\£\¥]?[-]?[0-9]*[\.]?[0-9]+$/,
+        integer: /^[-]?\d+$/,
+        boolean: /^(yes|no|true|false|0|1)$/i,
+        hex: /^[a-fA-F0-9]+$/,
+        float: /^[-]?[0-9]*[\.]?[0-9]+$/,
+        alphanumeric: /^[a-zA-Z0-9\ \']+$/,
+        ipv4: /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))[.]){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/,
+        phone:  /^([\+][0-9]{1,3}[\ \.\-])?([\(]{1}[0-9]{2,6}[\)])?([0-9\ \.\-\/]{3,20})((x|ext|extension)[\ ]?[0-9]{1,4})?$/,
+        url: /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
+
+        creditcard: function (val) {
+            //spaces and dashes may be valid characters, but must be stripped to calculate the checksum.
+            var valid = false, cardNumber = val.replace(/ +/g, '').replace(/-+/g, '');
+
+            var numDigits = cardNumber.length;
+            if (numDigits >= 14 && numDigits <= 16 && parseInt(cardNumber) > 0) {
+
+                var sum = 0, i = numDigits - 1, pos = 1, digit, luhn = new String();
+                do {
+                    digit = parseInt(cardNumber.charAt(i));
+                    luhn += (pos++ % 2 === 0) ? digit * 2 : digit;
+                } while (--i >= 0);
+
+                for (i = 0; i < luhn.length; i++) {
+                    sum += parseInt(luhn.charAt(i));
+                }
+                valid = sum % 10 === 0;
+            }
+            return valid;
+        }
+    };
 
     //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
-        maxLength: function(fieldValue, ruleValue){
-            return fieldValue.length <= ruleValue;
+        maxLength: function(fieldValue, ruleValue) {
+            return fieldValue.length < ruleValue;
         },
-        minLength: function(fieldValue, ruleValue){
-            return fieldValue.length >= ruleValue;
+        minLength: function(fieldValue, ruleValue) {
+            return fieldValue.length > ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
-          return fieldValue.length === ruleValue.exact_length;
+            return fieldValue.length === ruleValue;
         },
-        email: function (fieldValue) {
-          var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-          return re.test(str);
+        failIfFound:function (fieldValue, ruleValue) {
+            return fieldValue.indexOf(ruleValue) >= 0;
         },
-        maxValue: function(fieldValue, ruleValue){
-            return fieldValue <= ruleValue;
+        minValue: function(fieldValue, ruleValue) {
+            return fieldValue > ruleValue;
         },
-        maxFileSize: function(fieldValue, ruleValue){
+        maxValue: function(fieldValue, ruleValue) {
+            return fieldValue < ruleValue;
+        },
+        equalsValue: function(fieldValue, ruleValue) {
+            return fieldValue === ruleValue;
+        },
+        maxFileSize: function(fieldValue, ruleValue) {
             return this.maxValue(fieldValue.value, ruleValue);
         },
-        acceptedFileTypes: function(fieldValue, ruleValue){
+        acceptedFileTypes: function(fieldValue, ruleValue) {
             var fileType = fieldValue.FileType;
             return !!ruleValue.indexOf(fileType);
-        },
-        regTest: function(fieldValue, ruleValue){
-            if(_(ruleValue).isRegExp()){
-                return ruleValue.test(fieldValue);
-            }
         }
+
     };
 
     //Data transformation functions
     Transforms = {
-        trim:function(string){
+        trim: function(string) {
             return _(string).trim();
         },
-        ucfirst:function(string){
-            string = _(string).ltrim();
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        clean: function(string) {
+            return _(string).clean();
         },
-        stripTags:function(string){
+        capitalize: function(string) {
+            return _(string).capitalize();
+        },
+        stripTags: function(string) {
             return _(string).stripTags();
         },
-        escapeHTML:function(string){
+        escapeHTML: function(string) {
             return _(string).escapeHTML();
+        },
+        toUpperCase: function(string) {
+            return string.toUpperCase();
+        },
+        toLowerCase: function(string) {
+            return string.toLowerCase();
         }
     };
 
@@ -63,18 +106,73 @@
     };
 
     Form.prototype.validate = function (formFields){
-        var self = this, result, fieldValue;
+        var self = this, result;
         var formFieldsObject = this.formToObject(formFields);
 
         self.ErroredFields = {};
 
-        _(self.fields).each( function( field, fieldName ) {
-            //get the current value of the field that we are validating
-            fieldValue = formFieldsObject[fieldName];
+        _(self.fields).each( function(field, fieldName) {
 
-            //if there is a value we are going to validate it
-            if(_(fieldValue).trim()){
+            // get the current value of the field that we are validating
+            var fieldValue = formFieldsObject[fieldName];
 
+            // check if field is required (or conditional required)
+            if (field.required && !(fieldValue && fieldValue.trim().length > 0)) {
+
+                // simple case - required=true
+                if (field.required === true) {
+                    self.addFieldError(fieldName, "Field is required");
+                } else {
+                    // more complex case - required:{dependsOn: "otherfield"}
+                    if (field.required.dependsOn) {
+                        var dependsOnValue = formFieldsObject[field.required.dependsOn];
+                        if (dependsOnValue && dependsOnValue.trim().length > 0) {
+                            if (field.required.value) {
+                                // even more complex case - required:{dependsOn: "otherfield", value:"USA"}
+                                if (field.required.value === dependsOnValue)
+                                    self.addFieldError(fieldName, "Field is required");
+                            } else
+                                self.addFieldError(fieldName, "Field is required");
+                        }
+                    }
+                }
+
+            }
+
+            // if there is a value we are going to validate it
+            if(fieldValue){
+
+                // transform the data if need be.
+                if(field.transforms){
+                    fieldValue=transform(fieldValue, field.transforms);
+                    formFieldsObject[fieldName]=fieldValue;
+                }
+
+                // check the data format
+                if(field.format) {
+
+                    var fmt=field.format;
+                    if(_.isString(fmt))
+                        fmt=Formats[fmt];
+
+                    if(!fmt)
+                        console.log("Unknown format:"+field.format);
+                    else {
+                        if( _.isRegExp(fmt) ) {
+                            // it's a regular expression
+                            if(!fmt.test(fieldValue))
+                                self.addFieldError(fieldName, "Invalid format");
+
+                        } else {
+                            // it's a function
+                            if(!fmt(fieldValue))
+                                self.addFieldError(fieldName, "Invalid format");
+                        }
+                    }
+
+                }
+
+                // check rule sets
                 _(field.rules).each( function( ruleValue, ruleName ) {
                     if(_(fieldValue).isArray()){
                        _(fieldValue).each( function( subValue, key ) {
@@ -88,14 +186,9 @@
                             self.addFieldError(fieldName, ruleName);
                     }
                 });
-                //transform the data if need be.
-                if(field.transforms){
-                    transform(fieldValue, fieldName, field.transforms, formFieldsObject);
-                }
-            //otherwise we'll check if it is a required field or required dependently of another field
-            }else if(field.required && (field.required === true || formFieldsObject[field.required.dependsOn] == field.required.value)){
-                self.addFieldError(fieldName, "required");
             }
+
+
         });
 
         if(_(self.ErroredFields).isEmpty()){
@@ -128,7 +221,7 @@
         if(!this.ErroredFields[fieldName])
             this.ErroredFields[fieldName] = {};
         if(key){
-            if(!this.ErroredFields[fieldName][ruleName]);
+            if(!this.ErroredFields[fieldName][ruleName])
                 this.ErroredFields[fieldName][ruleName] = [];
             this.ErroredFields[fieldName][ruleName][key] = true;
         }else{
@@ -143,7 +236,7 @@
             var name = field.name;
             var value = field.fileType ? _(field).pick(value, fileType) : field.value;
 
-            if(typeof formFieldsObject[name] === 'undefined'){
+            if(_.isUndefined(formFieldsObject[name])){
                 formFieldsObject[name] = value;
             }else if(_(formFieldsObject[name]).isArray()){
                 formFieldsObject[name].push(value);
@@ -155,13 +248,18 @@
         return formFieldsObject;
     };
 
-    transform = function(fieldValue, fieldName, transformList, formFieldsObject){
-        _(transformList).each( function(transformName) {
-            formFieldsObject[fieldName] = Transforms[transformName](fieldValue);
+    var transform = function (fieldValue, transformList) {
+        _(transformList).each(function (transformName) {
+            var t=Transforms[transformName];
+            if (t)
+                fieldValue = t(fieldValue);
+            else
+                console.log("Invalid transform:" + transformName);
         });
+        return fieldValue;
     };
 
-    getFormData = function(formElem){
+    var getFormData = function(formElem){
         var formData = $(formElem).serializeArray(), fileInputs = $(formElem).find("input[type=file]");
 
         fileInputs.each(function () {
@@ -180,13 +278,13 @@
         return formData;
     };
 
-    failureCallback = function(erroredFields){
+    var failureCallback = function(erroredFields){
         _(erroredFields).each( function( value, key, errObj ) {
             $("#"+key+"-error").addClass("meso-error").text(value.message);
         });
     };
 
-    successCallback = function(){
+    var successCallback = function(){
         $(".meso-error").text("");
     };
 
@@ -234,19 +332,27 @@
 
     Mesosphere.Rules = Rules;
     Mesosphere.Transforms = Transforms;
+    Mesosphere.Formats = Formats;
+
+    Mesosphere.registerFormat = function (name, fn) {
+        if (Mesosphere.Formats[name]) {
+            throw new Error(name + " is already defined as a format.");
+        }
+        Mesosphere.Formats[name] = fn;
+    };
 
     Mesosphere.registerRule = function (name, fn) {
       if (Mesosphere.Rules[name]) {
         throw new Error(name + " is already defined as a rule.");
       }
-      Mesosphere.Rules[name] = testFn;
+      Mesosphere.Rules[name] = fn;
     };
 
     Mesosphere.registerTransform = function (name, fn) {
       if (Mesosphere.Transforms[name]) {
         throw new Error(name + " is already defined as a transform.");
       }
-      Mesosphere.Transforms[name] = testFn;
+      Mesosphere.Transforms[name] = fn;
     };
 
     root.Mesosphere = Mesosphere;
