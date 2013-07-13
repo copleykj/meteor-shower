@@ -55,6 +55,14 @@ Tinytest.add("required test", function (test) {
 
         // BAD CASES
 
+        validationObject = Mesosphere.requiredForm.validate([
+            {"name": "country", "value": "USA"},
+            {"name": "zipcode", "value": "33178"},
+            {"name": "email", "value": "nono@no.no"},
+            {"name": "notifications", "value": ""}
+        ]);
+        test.isTrue(validationObject.errors !== false);
+
         // missing dependsOn required fields
         validationObject = Mesosphere.requiredForm.validate([
             {"name": "email", "value": "email@domain.ext"},

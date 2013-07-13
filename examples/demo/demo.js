@@ -55,7 +55,7 @@ Mesosphere({
 
 Meteor.methods({
     signup: function (rawFormData) {
-        var validationObject = Mesosphere.signupForm.validate(rawFormData);
+        var validationObject = Mesosphere.testForm.validate(rawFormData);
         var newUser;
         if (!validationObject.errors) {
             console.log("no errors");
