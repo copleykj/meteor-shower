@@ -1,4 +1,6 @@
 (function(root){
+    "use strict";
+
     //Local variable declarations
     var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats, Transforms;
 
@@ -18,21 +20,25 @@
         phone:  /^([\+][0-9]{1,3}[\ \.\-])?([\(]{1}[0-9]{2,6}[\)])?([0-9\ \.\-\/]{3,20})((x|ext|extension)[\ ]?[0-9]{1,4})?$/,
         url: /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
 
+        //TODO: Cleanup..
+        //      Move var declarations to the top since they are hoisted anyway
+        //      Prefer while over do->while
         creditcard: function (val) {
             //spaces and dashes may be valid characters, but must be stripped to calculate the checksum.
             var valid = false, cardNumber = val.replace(/ +/g, '').replace(/-+/g, '');
 
             var numDigits = cardNumber.length;
-            if (numDigits >= 14 && numDigits <= 16 && parseInt(cardNumber) > 0) {
 
-                var sum = 0, i = numDigits - 1, pos = 1, digit, luhn = new String();
+            if (numDigits >= 14 && numDigits <= 16 && parseInt(cardNumber, 10) > 0) {
+
+                var sum = 0, i = numDigits - 1, pos = 1, digit, luhn = "";
                 do {
-                    digit = parseInt(cardNumber.charAt(i));
+                    digit = parseInt(cardNumber.charAt(i), 10);
                     luhn += (pos++ % 2 === 0) ? digit * 2 : digit;
                 } while (--i >= 0);
 
                 for (i = 0; i < luhn.length; i++) {
-                    sum += parseInt(luhn.charAt(i));
+                    sum += parseInt(luhn.charAt(i), 10);
                 }
                 valid = sum % 10 === 0;
             }
@@ -117,7 +123,7 @@
             var fieldValue = formFieldsObject[fieldName];
 
             // check if field is required (or conditional required)
-            if (field.required && !(fieldValue && fieldValue.trim().length > 0)) {
+            if (field.required && !(fieldValue && _(fieldValue).trim().length > 0)) {
 
                 // simple case - required=true
                 if (field.required === true) {
@@ -126,7 +132,7 @@
                     // more complex case - required:{dependsOn: "otherfield"}
                     if (field.required.dependsOn) {
                         var dependsOnValue = formFieldsObject[field.required.dependsOn];
-                        if (dependsOnValue && dependsOnValue.trim().length > 0) {
+                        if (dependsOnValue && _(dependsOnValue).trim().length > 0) {
                             if (field.required.value) {
                                 // even more complex case - required:{dependsOn: "otherfield", value:"USA"}
                                 if (field.required.value === dependsOnValue)
@@ -151,22 +157,25 @@
                 // check the data format
                 if(field.format) {
 
-                    var fmt=field.format;
-                    if(_.isString(fmt))
-                        fmt=Formats[fmt];
+                    var format=field.format;
 
-                    if(!fmt)
-                        console.log("Unknown format:"+field.format);
+                    if(_.isString(format)){
+                        format=Formats[format];
+                    }
+
+                    if(!format)
+                        throw new Error("Unknown format:"+field.format);
                     else {
-                        if( _.isRegExp(fmt) ) {
+                        if( _.isRegExp(format) ) {
                             // it's a regular expression
-                            if(!fmt.test(fieldValue))
+                            if(!format.test(fieldValue)){
                                 self.addFieldError(fieldName, "Invalid format");
-
+                            }
                         } else {
                             // it's a function
-                            if(!fmt(fieldValue))
+                            if(!format(fieldValue)){
                                 self.addFieldError(fieldName, "Invalid format");
+                            }
                         }
                     }
 
@@ -177,13 +186,15 @@
                     if(_(fieldValue).isArray()){
                        _(fieldValue).each( function( subValue, key ) {
                            result = Rules[ruleName](subValue, ruleValue, fieldName, formFieldsObject, self.fields);
-                           if(!result)
+                           if(!result){
                                self.addFieldError(fieldName, ruleName, key);
+                           }
                        });
                     }else{
                         result = Rules[ruleName](fieldValue, ruleValue, fieldName, formFieldsObject, self.fields);
-                        if(!result)
+                        if(!result){
                             self.addFieldError(fieldName, ruleName);
+                        }
                     }
                 });
             }
@@ -250,11 +261,13 @@
 
     var transform = function (fieldValue, transformList) {
         _(transformList).each(function (transformName) {
-            var t=Transforms[transformName];
-            if (t)
-                fieldValue = t(fieldValue);
-            else
-                console.log("Invalid transform:" + transformName);
+            var transform=Transforms[transformName];
+            if (transform){
+                fieldValue = transform(fieldValue);
+            }
+            else{
+                throw new Error("Invalid transform:" + transformName);
+            }
         });
         return fieldValue;
     };
