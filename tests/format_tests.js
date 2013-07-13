@@ -46,8 +46,74 @@ Mesosphere({
         cc: {
             format: "creditcard",
             message: "not a valid cc"
+        },
+        bool: {
+            format: "boolean",
+            message: "not a boolean value"
         }
     }});
+
+Tinytest.add("boolean format", function (test) {
+
+        var validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "true"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "false"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "0"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "1"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "yes"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "no"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "True"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "No"}
+        ]);
+        test.isTrue(validationObject.errors === false);
+
+        // BAD CASES
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "email@domain"}
+        ]);
+        test.isTrue(validationObject.errors !== false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "True0"}
+        ]);
+        test.isTrue(validationObject.errors !== false);
+
+        validationObject = Mesosphere.formatsForm.validate([
+            {"name": "bool", "value": "00"}
+        ]);
+        test.isTrue(validationObject.errors !== false);
+
+    }
+);
 
 Tinytest.add("cc format", function (test) {
 
@@ -169,7 +235,6 @@ Tinytest.add("phone format", function (test) {
 );
 
 Tinytest.add("ipv4 format", function (test) {
-
 
         var validationObject = Mesosphere.formatsForm.validate([
             {"name": "ipv4", "value": ""}

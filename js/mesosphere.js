@@ -10,6 +10,7 @@
         email: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         money: /^[\$\€\£\¥]?[-]?[0-9]*[\.]?[0-9]+$/,
         integer: /^[-]?\d+$/,
+        boolean: /^(yes|no|true|false|0|1)$/i,
         hex: /^[a-fA-F0-9]+$/,
         float: /^[-]?[0-9]*[\.]?[0-9]+$/,
         alphanumeric: /^[a-zA-Z0-9\ \']+$/,
@@ -48,9 +49,8 @@
             return fieldValue.length > ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
-          return fieldValue.length === ruleValue;
+            return fieldValue.length === ruleValue;
         },
-        //TODO: equalsField, NOT EQUALS, min,max
         failIfFound:function (fieldValue, ruleValue) {
             return fieldValue.indexOf(ruleValue) >= 0;
         },
@@ -58,7 +58,6 @@
             return fieldValue > ruleValue;
         },
         maxValue: function(fieldValue, ruleValue) {
-            //TODO:_('2.556').toNumber()
             return fieldValue < ruleValue;
         },
         equalsValue: function(fieldValue, ruleValue) {
@@ -76,25 +75,25 @@
 
     //Data transformation functions
     Transforms = {
-        trim:function(string) {
+        trim: function(string) {
             return _(string).trim();
         },
-        clean:function(string) {
+        clean: function(string) {
             return _(string).clean();
         },
-        capitalize:function(string) {
+        capitalize: function(string) {
             return _(string).capitalize();
         },
-        stripTags:function(string) {
+        stripTags: function(string) {
             return _(string).stripTags();
         },
-        escapeHTML:function(string) {
+        escapeHTML: function(string) {
             return _(string).escapeHTML();
         },
-        toUpperCase:function(string) {
+        toUpperCase: function(string) {
             return string.toUpperCase();
         },
-        toLowerCase:function(string) {
+        toLowerCase: function(string) {
             return string.toLowerCase();
         }
     };
@@ -112,25 +111,38 @@
 
         self.ErroredFields = {};
 
-        _(self.fields).each( function( field, fieldName ) {
+        _(self.fields).each( function(field, fieldName) {
 
-
-
-            //get the current value of the field that we are validating
+            // get the current value of the field that we are validating
             var fieldValue = formFieldsObject[fieldName];
 
+            // check if field is required (or conditional required)
+            if (field.required && !(fieldValue && fieldValue.trim().length > 0)) {
 
-            //TODO: review this condition
-            //  if(field.required && (field.required === true || formFieldsObject[field.required.dependsOn] === field.required.value)){
-            //check if field is required
-            if(field.required === true &&  (_(fieldValue).isUndefined() || fieldValue.trim().length === 0) ) {
-                self.addFieldError(fieldName, "Field is required");
+                // simple case - required=true
+                if (field.required === true) {
+                    self.addFieldError(fieldName, "Field is required");
+                } else {
+                    // more complex case - required:{dependsOn: "otherfield"}
+                    if (field.required.dependsOn) {
+                        var dependsOnValue = formFieldsObject[field.required.dependsOn];
+                        if (dependsOnValue && dependsOnValue.trim().length > 0) {
+                            if (field.required.value) {
+                                // even more complex case - required:{dependsOn: "otherfield", value:"USA"}
+                                if (field.required.value === dependsOnValue)
+                                    self.addFieldError(fieldName, "Field is required");
+                            } else
+                                self.addFieldError(fieldName, "Field is required");
+                        }
+                    }
+                }
+
             }
 
-            //if there is a value we are going to validate it
+            // if there is a value we are going to validate it
             if(fieldValue){
 
-                //transform the data if need be.
+                // transform the data if need be.
                 if(field.transforms){
                     fieldValue=transform(fieldValue, field.transforms);
                     formFieldsObject[fieldName]=fieldValue;
@@ -146,7 +158,7 @@
                     if(!fmt)
                         console.log("Unknown format:"+field.format);
                     else {
-                        if( fmt instanceof RegExp) {
+                        if( _.isRegExp(fmt) ) {
                             // it's a regular expression
                             if(!fmt.test(fieldValue))
                                 self.addFieldError(fieldName, "Invalid format");
@@ -209,7 +221,7 @@
         if(!this.ErroredFields[fieldName])
             this.ErroredFields[fieldName] = {};
         if(key){
-            if(!this.ErroredFields[fieldName][ruleName]);
+            if(!this.ErroredFields[fieldName][ruleName])
                 this.ErroredFields[fieldName][ruleName] = [];
             this.ErroredFields[fieldName][ruleName][key] = true;
         }else{
@@ -224,7 +236,7 @@
             var name = field.name;
             var value = field.fileType ? _(field).pick(value, fileType) : field.value;
 
-            if(typeof formFieldsObject[name] === 'undefined'){
+            if(_.isUndefined(formFieldsObject[name])){
                 formFieldsObject[name] = value;
             }else if(_(formFieldsObject[name]).isArray()){
                 formFieldsObject[name].push(value);
