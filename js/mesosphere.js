@@ -49,10 +49,10 @@
     //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
         maxLength: function(fieldValue, ruleValue) {
-            return fieldValue.length < ruleValue;
+            return fieldValue.length <= ruleValue;
         },
         minLength: function(fieldValue, ruleValue) {
-            return fieldValue.length > ruleValue;
+            return fieldValue.length >= ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
             return fieldValue.length === ruleValue;
@@ -61,10 +61,10 @@
             return fieldValue.indexOf(ruleValue) >= 0;
         },
         minValue: function(fieldValue, ruleValue) {
-            return fieldValue > ruleValue;
+            return fieldValue >= ruleValue;
         },
         maxValue: function(fieldValue, ruleValue) {
-            return fieldValue < ruleValue;
+            return fieldValue <= ruleValue;
         },
         equalsValue: function(fieldValue, ruleValue) {
             return fieldValue === ruleValue;
