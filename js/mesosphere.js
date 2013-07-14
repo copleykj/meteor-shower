@@ -49,32 +49,35 @@
     //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
         maxLength: function(fieldValue, ruleValue) {
-            return fieldValue.length < ruleValue;
+            return fieldValue.length <= ruleValue;
         },
         minLength: function(fieldValue, ruleValue) {
-            return fieldValue.length > ruleValue;
+            return fieldValue.length >= ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
-            return fieldValue.length === ruleValue;
+            // keep comparator as ==
+            return fieldValue.length == ruleValue;
         },
         failIfFound:function (fieldValue, ruleValue) {
-            return fieldValue.indexOf(ruleValue) >= 0;
+            return fieldValue.indexOf(ruleValue) === -1;
         },
         minValue: function(fieldValue, ruleValue) {
-            return fieldValue > ruleValue;
+            return fieldValue >= ruleValue;
         },
         maxValue: function(fieldValue, ruleValue) {
-            return fieldValue < ruleValue;
+            return fieldValue <= ruleValue;
         },
         equalsValue: function(fieldValue, ruleValue) {
-            return fieldValue === ruleValue;
+            // keep comparator as ==
+            return fieldValue == ruleValue;
         },
+        //TODO: equalsField, notEqualsField
         maxFileSize: function(fieldValue, ruleValue) {
             return this.maxValue(fieldValue.value, ruleValue);
         },
         acceptedFileTypes: function(fieldValue, ruleValue) {
             var fileType = fieldValue.FileType;
-            return !!ruleValue.indexOf(fileType);
+            return ruleValue.indexOf(fileType) >= 0;
         }
 
     };
@@ -89,6 +92,12 @@
         },
         capitalize: function(string) {
             return _(string).capitalize();
+        },
+        slugify:function(string) {
+            return _(string).slugify();
+        },
+        humanize:function(string) {
+            return _(string).humanize();
         },
         stripTags: function(string) {
             return _(string).stripTags();
