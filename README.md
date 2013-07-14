@@ -144,6 +144,8 @@ The following transforms are currently implemented:
 * escapeHTML - Escapes HTML tags
 * toUpperCase - all to UPPERCASE
 * toLowerCase - all to lowercase
+* slugify
+* humanize
 
 Please check the [underscore.js documentation](http://underscorejs.org/) for more details about these operations.
 

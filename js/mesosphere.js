@@ -69,12 +69,13 @@
         equalsValue: function(fieldValue, ruleValue) {
             return fieldValue === ruleValue;
         },
+        //TODO: equalsField, notEqualsField
         maxFileSize: function(fieldValue, ruleValue) {
             return this.maxValue(fieldValue.value, ruleValue);
         },
         acceptedFileTypes: function(fieldValue, ruleValue) {
             var fileType = fieldValue.FileType;
-            return ruleValue.indexOf(fileType)>=0;
+            return ruleValue.indexOf(fileType) >= 0;
         }
 
     };
@@ -89,6 +90,12 @@
         },
         capitalize: function(string) {
             return _(string).capitalize();
+        },
+        slugify:function(string) {
+            return _(string).slugify();
+        },
+        humanize:function(string) {
+            return _(string).humanize();
         },
         stripTags: function(string) {
             return _(string).stripTags();
