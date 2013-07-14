@@ -74,7 +74,7 @@
         },
         acceptedFileTypes: function(fieldValue, ruleValue) {
             var fileType = fieldValue.FileType;
-            return !!ruleValue.indexOf(fileType);
+            return ruleValue.indexOf(fileType)>=0;
         }
 
     };
