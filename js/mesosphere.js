@@ -55,10 +55,11 @@
             return fieldValue.length >= ruleValue;
         },
         exactLength: function (fieldValue, ruleValue) {
-            return fieldValue.length === ruleValue;
+            // keep comparator as ==
+            return fieldValue.length == ruleValue;
         },
         failIfFound:function (fieldValue, ruleValue) {
-            return fieldValue.indexOf(ruleValue) >= 0;
+            return fieldValue.indexOf(ruleValue) === -1;
         },
         minValue: function(fieldValue, ruleValue) {
             return fieldValue >= ruleValue;
@@ -67,7 +68,8 @@
             return fieldValue <= ruleValue;
         },
         equalsValue: function(fieldValue, ruleValue) {
-            return fieldValue === ruleValue;
+            // keep comparator as ==
+            return fieldValue == ruleValue;
         },
         //TODO: equalsField, notEqualsField
         maxFileSize: function(fieldValue, ruleValue) {
