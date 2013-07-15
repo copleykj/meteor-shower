@@ -273,7 +273,7 @@ Meteor.methods({
     }
 });
 
-----
+```
 
 Mesosphere takes one argument. This argument is an object describing the form, how to validate and transform the data, the Meteor method to use, and the client side callbacks.
 
