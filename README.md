@@ -28,7 +28,7 @@ If you use **Meteorite**, there is nothing to do. Just type the following statem
 
 ##Usage
 
-Mesasphere invocation happens in two steps:
+Mesosphere invocation happens in two steps:
 
 1. First a configuration step
 2. Then runtime validation step
@@ -67,7 +67,7 @@ The validation workflow is processed as follows: first the fields are _transform
     
 ##Form description
 
-Mesasphere requires an object that describe the form and fields elements. This section describes the different elements which can compose that description.
+Mesosphere requires an object that describe the form and fields elements. This section describes the different elements which can compose that description.
 
 ###Basics elements
 
