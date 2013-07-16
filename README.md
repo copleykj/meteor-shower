@@ -34,9 +34,9 @@ Mesosphere invocation happens in two steps:
 2. Then runtime validation step
 
 ###Configuration
-
+```javascript
     Mesosphere(formDescriptionObject);
-    
+```   
 When invoked, Mesosphere creates a new form object and stores it as a property of itself. You can then gain access to the form by referring to *Mesosphere.***formName**.
 
 ###Validation
@@ -47,7 +47,7 @@ To validate a form, call the **validate()** function on the form object and it w
 
 For instance, the above call could return:
 
-```
+```javascript
 validationObject:{
     errors:{
         username:{
@@ -94,7 +94,7 @@ fields:{
 
 Let's see this in practice:
 
-```
+```javascript
 
    // field is required
    required: true 
@@ -119,7 +119,7 @@ Let's see this in practice:
 
 ####Transformations
 
-```
+```javascript
 Mesosphere({
     name: "testForm",
     fields: {
@@ -129,7 +129,7 @@ Mesosphere({
             format: "alphanumeric",
             message: "That's a weird first name!"
         }
-    });
+});
 
 ```
 
@@ -176,7 +176,7 @@ Mesosphere({
             format: /^[0-9]{5}$/,
             message: "bad zip code"
         }
-    });
+});
 
 ```
 
@@ -191,7 +191,7 @@ Mesosphere({
             format: function(val) { return val.indexOf("Thank you")},
             message: "bad zip code"
         }
-    });
+});
 
 ```
 
@@ -212,7 +212,7 @@ Mesosphere({
     		   minLength:4
 			}
         }
-    });
+});
 
 ```
 
@@ -236,11 +236,12 @@ By default this tries to insert the error message provided in an element with an
 
 For example for a field with a name of username, this function will try to insert the message text in an element like this.
 
+```html
     <span id='username-error'></span>
-
+```
 When overriding the default call back you can maintain default functionality, while building upon it, by calling the *failureCallback* function and passing in the erroredFields object that was passed to the onFailure callback.
 
-```
+```javascript
 onFailure: function(erroredFields){
    //custom code here
    failureCallback(erroredFields);
@@ -324,7 +325,7 @@ For instance,
 ```javascript
 Mesosphere.registerRule("force-zipcode", function(fieldValue, ruleValue){
             return fieldValue.length === ruleValue;
-        })
+});
         
 Mesosphere({
     name:"myForm",
