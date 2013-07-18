@@ -117,14 +117,14 @@
         this.fields = fields;
         this.onSuccess = onSuccess;
         this.onFailure = onFailure;
-        this.ErroredFields = {};
+        this.erroredFields = {};
     };
 
     Form.prototype.validate = function (formFields){
         var self = this, result;
         var formFieldsObject = this.formToObject(formFields);
 
-        self.ErroredFields = {};
+        self.erroredFields = {};
 
         _(self.fields).each( function(field, fieldName) {
 
@@ -211,41 +211,41 @@
 
         });
 
-        if(_(self.ErroredFields).isEmpty()){
-            self.ErroredFields = false;
+        if(_(self.erroredFields).isEmpty()){
+            self.erroredFields = false;
             if(Meteor.isClient){
                 self.onSuccess(formFieldsObject);
             }
         }else{
             self.addMessages();
             if(Meteor.isClient){
-                self.onFailure(self.ErroredFields);
+                self.onFailure(self.erroredFields);
             }
         }
 
-        return {errors:self.ErroredFields, formData:formFieldsObject};
+        return {errors:self.erroredFields, formData:formFieldsObject};
 
     };
 
     Form.prototype.addMessages = function(){
         var self = this;
-        _(self.ErroredFields).each( function( value, key ) {
+        _(self.erroredFields).each( function( value, key ) {
             if(self.fields[key].message){
-                self.ErroredFields[key].message = self.ErroredFields[key].required ? "Required" : self.fields[key].message;
+                self.erroredFields[key].message = self.erroredFields[key].required ? "Required" : self.fields[key].message;
             }
         });
     };
 
     Form.prototype.addFieldError = function(fieldName, ruleName, key){
 
-        if(!this.ErroredFields[fieldName])
-            this.ErroredFields[fieldName] = {};
+        if(!this.erroredFields[fieldName])
+            this.erroredFields[fieldName] = {};
         if(key){
-            if(!this.ErroredFields[fieldName][ruleName])
-                this.ErroredFields[fieldName][ruleName] = [];
-            this.ErroredFields[fieldName][ruleName][key] = true;
+            if(!this.erroredFields[fieldName][ruleName])
+                this.erroredFields[fieldName][ruleName] = [];
+            this.erroredFields[fieldName][ruleName][key] = true;
         }else{
-           this.ErroredFields[fieldName][ruleName] = true;
+           this.erroredFields[fieldName][ruleName] = true;
         }
     };
 
