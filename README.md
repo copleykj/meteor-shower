@@ -288,9 +288,7 @@ Mesosphere({
         username:{
             required:true,
             message:"letters or numbers, between 3 and 20 characters.",
-            rules:{
-                regTest:/^[A-Z0-9]{3,20}$/i
-            },
+            format:/^[A-Z0-9]{3,20}$/i,
             transform:["trim"]
         },
         password:{
