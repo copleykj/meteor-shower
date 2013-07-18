@@ -256,13 +256,12 @@
             var name = field.name;
             var value = field.fileType ? _(field).pick(value, fileType) : field.value;
 
-            var v=formFieldsObject[name];
-            if(_.isUndefined(v)){
+            if(_.isUndefined(formFieldsObject[name])){
                 formFieldsObject[name] = value;
-            }else if(_.isArray(v)){
+            }else if(_.isArray(formFieldsObject[name])){
                 formFieldsObject[name].push(value);
             }else{
-                formFieldsObject[name] = [v, value];
+                formFieldsObject[name] = [formFieldsObject[name], value];
             }
         });
 
