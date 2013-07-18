@@ -301,13 +301,16 @@
     };
 
     var failureCallback = function(erroredFields){
+        $(".meso-error").text("");
         _(erroredFields).each( function( value, key, errObj ) {
             $("#"+key+"-error").addClass("meso-error").text(value.message);
         });
     };
 
     var successCallback = function(){
+        console.log('here');
         $(".meso-error").text("");
+        $(".meso-error").removeClass("meso-error");
     };
 
     Mesosphere = function(optionsObject){
