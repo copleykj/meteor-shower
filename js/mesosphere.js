@@ -308,7 +308,6 @@
     };
 
     var successCallback = function(){
-        console.log('here');
         $(".meso-error").text("");
         $(".meso-error").removeClass("meso-error");
     };
