@@ -192,7 +192,7 @@
 
                 // check rule sets
                 _(field.rules).each( function( ruleValue, ruleName ) {
-                    if(_(fieldValue).isArray()){
+                    if(_.isArray(fieldValue)){
                        _(fieldValue).each( function( subValue, key ) {
                            result = Rules[ruleName](subValue, ruleValue, fieldName, formFieldsObject, self.fields);
                            if(!result){
@@ -211,7 +211,7 @@
 
         });
 
-        if(_(self.erroredFields).isEmpty()){
+        if(_.isEmpty(self.erroredFields)){
             self.erroredFields = false;
             if(Meteor.isClient){
                 self.onSuccess(formFieldsObject);
@@ -256,12 +256,13 @@
             var name = field.name;
             var value = field.fileType ? _(field).pick(value, fileType) : field.value;
 
-            if(_.isUndefined(formFieldsObject[name])){
+            var v=formFieldsObject[name];
+            if(_.isUndefined(v)){
                 formFieldsObject[name] = value;
-            }else if(_(formFieldsObject[name]).isArray()){
+            }else if(_.isArray(v)){
                 formFieldsObject[name].push(value);
             }else{
-                formFieldsObject[name] = [formFieldsObject[name], value];
+                formFieldsObject[name] = [v, value];
             }
         });
 
