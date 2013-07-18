@@ -1,8 +1,8 @@
-#Mesosphere
+# Mesosphere
 
 A dual client/server side form data validation and transformation package for **Meteor**
 
-##Features
+## Features
 
 * Same validations logic on client **and** server sides
 * Clean validation workflow with
@@ -13,7 +13,7 @@ A dual client/server side form data validation and transformation package for **
 * Frontend hooks
 * Extensible via api
 
-##Requirements
+## Requirements
 
 The project depends on the following libraries:
 
@@ -26,20 +26,20 @@ If you use **Meteorite**, there is nothing to do. Just type the following statem
     mrt add Mesosphere
 
 
-##Usage
+## Usage
 
 Mesosphere invocation happens in two steps:
 
 1. First a configuration step
 2. Then runtime validation step
 
-###Configuration
+### Configuration
 ```javascript
     Mesosphere(formDescriptionObject);
 ```   
 When invoked, Mesosphere creates a new form object and stores it as a property of itself. You can then gain access to the form by referring to *Mesosphere.***formName**.
 
-###Validation
+### Validation
 
     var validationObject = Mesosphere.loginForm.validate(formData);
 
@@ -65,15 +65,25 @@ validationObject:{
 If there are no errors, **validationObject.errors equals false**;
 The validation workflow is processed as follows: first the fields are _transformed_, then checked for _required_, compared aginst their _format_ and finally evaluated against each _rule_
     
-##Form description
+## Form description
 
 Mesosphere requires an object that describe the form and fields elements. This section describes the different elements which can compose that description.
 
-###Basics elements
+### Basics elements
 
 **name/id** - The form must contain either a name or an id key which corresponds to the name or id of the form element in your html. This will create a new form object scoped to **Mesosphere.formName** or **Mesosphere.formId**. These accessors are the main access point to any validation checks.
 
 **method** - The name of an optional remote method to call. If you pass in a string for the method, Mesosphere will call the Meteor server method by this name, if you pass in a function then it will call the function. Either way it passes one argument to the method or function which is the raw data taken from the form.
+
+**aggregate** - An object who's keys are the name of a new field to be created from a set of other form elements. The value for each key is an array with it's first element as the name of the aggregate function, an the second another array containing the names of the fields you would like to aggregate. A third element to the array can be added which will be passed as an argument to the aggregate function.
+
+```javascript
+aggreagate:{
+	birthDate:["concatenate", ["month", "day", "year"], " "]
+}
+```
+
+Aggregation will be performed prior to validation, giving you the opportunity to validate the field created by the aggregation as well.
 
 **fields** - This is a list of fields with each key being the name of a form field and the value being an object telling Mesosphere about that field. See next chapter.
 
@@ -117,7 +127,7 @@ Let's see this in practice:
     
 **message** - The message key is the message added to the fields in the erroredFields object which is returned from the validate function and passed to the *onFailure* callback when validation fails. if message is not defined, the error labelling is simply ignored.
 
-####Transformations
+#### Transformations
 
 ```javascript
 Mesosphere({
@@ -147,9 +157,9 @@ The following transforms are currently implemented:
 * slugify
 * humanize
 
-Please check the [underscore.js documentation](http://underscorejs.org/) for more details about these operations.
+Please check the [underscore.js documentation](http://underscorejs.org/) and [underscore.string documentation](https://github.com/epeli/underscore.string) for more details about these operations.
 
-####Formats
+#### Formats
 
 Element that defines the field data format. the format can be expressed as a predefined string, a regex or a function.
 
@@ -195,7 +205,7 @@ Mesosphere({
 
 ```
 
-####Rules
+#### Rules
 
 List of rules for validating the field value. Note that this is different from a **the format** which acts more as a _regular expression_. Rules implement precise logic such as boundaries or edge case detection.
 
@@ -228,7 +238,7 @@ The list of predefined rules is the following:
 * maxFileSize
 * acceptedFileTypes
 
-###Error management
+### Error management
 
 **onFailure** - The client side callback when validation has failed. When this is called it passes in an erroredFields object which has each field that failed validation, which rules it failed and the message you provided.
 
@@ -305,7 +315,7 @@ Mesosphere({
 
 
 
-##Extending
+## Extending
 
 You may add you own set of rules & transforms by using the following methods:
 
@@ -322,7 +332,7 @@ For instance,
 
 ```javascript
 Mesosphere.registerRule("force-zipcode", function(fieldValue, ruleValue){
-            return fieldValue.length === ruleValue;
+            return fieldValue === ruleValue;
 });
         
 Mesosphere({
@@ -342,15 +352,15 @@ Mesosphere({
 
 ```
 
-##Complete Usage Example
+## Complete Usage Example
 
 The project comes with a fully functional demonstration and unit tests.
     
-##Contribution
+## Contribution
 
 Contributions are always welcome, please follow these steps to submit your changes via a github pull request.
 
-You code should include unit tests & documentation changes when applicable.
+Your code should include unit tests & documentation changes when applicable.
 
 Ensure all unit tests pass sucessfully.
 
