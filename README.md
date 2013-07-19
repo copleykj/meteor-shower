@@ -79,7 +79,7 @@ Mesosphere requires an object that describe the form and fields elements. This s
 
 ```javascript
 aggreagate:{
-	birthDate:["concatenate", ["month", "day", "year"], " "]
+	birthDate:["join", ["month", "day", "year"], " "]
 }
 ```
 
