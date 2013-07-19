@@ -85,6 +85,14 @@ aggreagate:{
 
 Aggregation will be performed prior to validation, giving you the opportunity to validate the field created by the aggregation as well.
 
+Current aggregation functions are:
+
+* sum - calculates the sum of the specified fields.
+* avg - calculates the average of specified fields.
+* join - concatenates the values of the specified fields. Takes optional separator argument.
+* arraySet - creates new array of values of the specified fields.
+* objectSet - creates new object of key:value pairs of specified fields.
+
 **fields** - This is a list of fields with each key being the name of a form field and the value being an object telling Mesosphere about that field. See next chapter.
 
 ```javascript
@@ -177,7 +185,7 @@ Element that defines the field data format. the format can be expressed as a pre
 
 When using a regex, you could for instance use something as follows. Note how the format references a RegEx.
 
-```
+```javascript
 Mesosphere({
     name: "testForm",
     fields: {
@@ -192,7 +200,7 @@ Mesosphere({
 
 Using a function is equally straighforward. For instance in the exmaple below, we define a function that only accepts strings with a "Thank you" note. Format functions are typically used when a regular expression falls short.
 
-```
+```javascript
 Mesosphere({
     name: "testForm",
     fields: {
@@ -209,7 +217,7 @@ Mesosphere({
 
 List of rules for validating the field value. Note that this is different from a **the format** which acts more as a _regular expression_. Rules implement precise logic such as boundaries or edge case detection.
 
-```
+```javascript
 Mesosphere({
     name: "testForm",
     fields: {
@@ -247,7 +255,7 @@ By default this tries to insert the error message provided in an element with an
 For example for a field with a name of username, this function will try to insert the message text in an element like this.
 
 ```html
-    <span id='username-error'></span>
+<span id='username-error'></span>
 ```
 When overriding the default call back you can maintain default functionality, while building upon it, by calling the *failureCallback* function and passing in the erroredFields object that was passed to the onFailure callback.
 
@@ -321,11 +329,13 @@ You may add you own set of rules & transforms by using the following methods:
 
 ```javascript
 // fn takes the fieldValue and the defined ruleValue
-Mesosphere.registerFormat = function (name, fn);
+Mesosphere.registerFormat(name, fn);
 // fn takes the fieldValue and the defined ruleValue
-Mesosphere.registerRule = function (name, fn);
-// fn takes the string to transform
-Mesosphere.registerTransform = function (name, fn);
+Mesosphere.registerRule(name, fn);
+// fn recieves the string to transform
+Mesosphere.registerTransform(name, fn);
+//fn recieves an array of field names, an object containing the current submitted form values and optionally an argument passed to the function.
+Mesosphere.registerAggregate(name, fn);
 ```
 
 For instance,
