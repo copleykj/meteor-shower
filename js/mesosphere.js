@@ -2,10 +2,48 @@
     "use strict";
 
     //Local variable declarations
-    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Formats, Transforms;
+    var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Aggregates, Formats, Transforms;
 
     //Setup access to jQuery, Underscore and Meteor
     $=root.jQuery; _=root._; Meteor=root.Meteor;
+
+    Aggregates = {
+        sum: function(fields, formFieldsObject){
+            var sum = 0;
+            _(fields).each( function(fieldName) {
+                var fieldValue = formFieldsObject[fieldName];
+                if(_.isNumber(fieldValue)){
+                    sum += fieldValue;
+                }
+            });
+            return sum;
+        },
+        avg: function(fields, formFieldsObject){
+            var sum = this.sum(fields, formFieldsObject);
+            return sum / fields.length;
+        },
+        join: function(fields, formFieldsObject, argument){
+            var fieldValues = [];
+            _(fields).each( function(fieldName) {
+                fieldValues.push(formFieldsObject[fieldName]);
+            });
+            return fieldValues.join(argument);
+        },
+        arraySet: function(fields, formFieldsObject){
+            var newField = [];
+            _(fields).each( function(fieldName) {
+                newField.push(formFieldsObject[fieldName]);
+            });
+            return newField;
+        },
+        objectSet: function(fields, formFieldsObject){
+            var newField = {};
+            _(fields).each( function(fieldName) {
+                newField[fieldName] = formFieldsObject[fieldName];
+            });
+            return newField;
+        }
+    };
 
     //Formats
     Formats = {
@@ -46,7 +84,7 @@
         }
     };
 
-    //Rules are always passed 5 arguments, fieldValue, ruleValue, FieldName, formFieldsObject and fieldRequirements respectively.
+    //Rules are always passed 5 arguments, fieldValue, ruleValue, fieldName, formFieldsObject and fieldRequirements respectively.
     Rules = {
         maxLength: function(fieldValue, ruleValue) {
             return fieldValue.length <= ruleValue;
@@ -113,10 +151,11 @@
         }
     };
 
-    Form = function(fields, onSuccess, onFailure){
+    Form = function(fields, aggregates, onSuccess, onFailure){
         this.fields = fields;
         this.onSuccess = onSuccess;
         this.onFailure = onFailure;
+        this.aggregates = aggregates;
         this.erroredFields = {};
     };
 
@@ -125,6 +164,14 @@
         var formFieldsObject = this.formToObject(formFields);
 
         self.erroredFields = {};
+
+        //aggregate fields first so we can validate the new field later.
+        _(self.aggregates).each( function(aggregateInfo, newFieldName) {
+            var aggregateName = aggregateInfo[0];
+            var aggregateFields = aggregateInfo[1];
+            var aggregateArgs = aggregateInfo[2];
+            formFieldsObject[newFieldName] = Aggregates[aggregateName](aggregateFields, formFieldsObject, aggregateArgs);
+        });
 
         _(self.fields).each( function(field, fieldName) {
 
@@ -316,7 +363,7 @@
         var selector = "";
         var formIdentifier = optionsObject.name || optionsObject.id;
 
-        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback}).extend(optionsObject);
+        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback, aggregates:{}}).extend(optionsObject);
 
         //Make sure they've got all the info we need and they haven't provided the same form information twice
         if(!formIdentifier)
@@ -327,7 +374,7 @@
             throw new Error("Form is already being validated");
 
         //Create a new form object scoped to Mesosphere.formName
-        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.onSuccess, optionsObject.onFailure);
+        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.onSuccess, optionsObject.onFailure);
 
         //if this is the browser, set up a submit event handler.
         if(Meteor.isClient){
@@ -357,6 +404,14 @@
     Mesosphere.Rules = Rules;
     Mesosphere.Transforms = Transforms;
     Mesosphere.Formats = Formats;
+    Mesosphere.Aggregates = Aggregates;
+
+    Mesosphere.registerAggregate = function (name, fn) {
+      if (Mesosphere.Aggregates[name]) {
+        throw new Error(name + " is already defined as a aggregate.");
+      }
+      Mesosphere.Transforms[name] = fn;
+    };
 
     Mesosphere.registerFormat = function (name, fn) {
         if (Mesosphere.Formats[name]) {
