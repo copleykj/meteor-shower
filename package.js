@@ -19,5 +19,5 @@ Package.on_test(function (api) {
     api.add_files('tests/format_tests.js',  ['client', 'server']);
     api.add_files('tests/rules_tests.js',  ['client', 'server']);
     api.add_files('tests/transforms_tests.js',  ['client', 'server']);
-
+    api.add_files('tests/aggregate_tests.js', ['client', 'server']);
 });

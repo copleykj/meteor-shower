@@ -24,7 +24,7 @@ Tinytest.add("transforms tests", function (test) {
     validationObject = Mesosphere.transForm.validate([
         {"name": "alpha2", "value": "  capitalize dash-CamelCase_underscore trim  "}
     ]);
-    //console.log(JSON.stringify(validationObject));
+
     test.isTrue(validationObject.errors === false && validationObject.formData.alpha2==="Capitalize dash camel case underscore trim");
 
 });

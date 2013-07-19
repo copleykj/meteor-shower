@@ -11,16 +11,17 @@
         sum: function(fields, formFieldsObject){
             var sum = 0;
             _(fields).each( function(fieldName) {
-                var fieldValue = formFieldsObject[fieldName];
+                var fieldValue = parseFloat(formFieldsObject[fieldName]);
                 if(_.isNumber(fieldValue)){
                     sum += fieldValue;
                 }
             });
-            return sum;
+            return sum.toString();
         },
         avg: function(fields, formFieldsObject){
-            var sum = this.sum(fields, formFieldsObject);
-            return sum / fields.length;
+            var sum = parseFloat(this.sum(fields, formFieldsObject));
+            sum = sum / fields.length;
+            return sum.toString();
         },
         join: function(fields, formFieldsObject, argument){
             var fieldValues = [];
@@ -170,7 +171,9 @@
             var aggregateName = aggregateInfo[0];
             var aggregateFields = aggregateInfo[1];
             var aggregateArgs = aggregateInfo[2];
-            formFieldsObject[newFieldName] = Aggregates[aggregateName](aggregateFields, formFieldsObject, aggregateArgs);
+            var newField = Aggregates[aggregateName](aggregateFields, formFieldsObject, aggregateArgs);
+
+            formFieldsObject[newFieldName] = newField;
         });
 
         _(self.fields).each( function(field, fieldName) {
@@ -363,7 +366,7 @@
         var selector = "";
         var formIdentifier = optionsObject.name || optionsObject.id;
 
-        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback, aggregates:{}}).extend(optionsObject);
+        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback, aggregate:{}}).extend(optionsObject);
 
         //Make sure they've got all the info we need and they haven't provided the same form information twice
         if(!formIdentifier)
@@ -374,7 +377,7 @@
             throw new Error("Form is already being validated");
 
         //Create a new form object scoped to Mesosphere.formName
-        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.onSuccess, optionsObject.onFailure);
+        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregate, optionsObject.onSuccess, optionsObject.onFailure);
 
         //if this is the browser, set up a submit event handler.
         if(Meteor.isClient){
