@@ -160,8 +160,8 @@
         this.erroredFields = {};
     };
 
-    Form.prototype.validate = function (formFields){
-        var self = this, result;
+    Form.prototype.validate = function (formFields, callback){
+        var self = this, result, validationObject;
         var formFieldsObject = this.formToObject(formFields);
 
         self.erroredFields = {};
@@ -273,7 +273,11 @@
             }
         }
 
-        return {errors:self.erroredFields, formData:formFieldsObject};
+        if(callback && _(callback).isFunction()){
+            callback(self.erroredFields, formFieldsObject);
+        }else{
+            return {errors:self.erroredFields, formData:formFieldsObject};
+        }
 
     };
 
