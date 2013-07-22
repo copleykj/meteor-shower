@@ -186,7 +186,7 @@
 
                 // simple case - required=true
                 if (field.required === true) {
-                    self.addFieldError(fieldName, "Field is required");
+                    self.addFieldError(fieldName, "required");
                 } else {
                     // more complex case - required:{dependsOn: "otherfield"}
                     if (field.required.dependsOn) {
@@ -195,9 +195,9 @@
                             if (field.required.value) {
                                 // even more complex case - required:{dependsOn: "otherfield", value:"USA"}
                                 if (field.required.value === dependsOnValue)
-                                    self.addFieldError(fieldName, "Field is required");
+                                    self.addFieldError(fieldName, "required");
                             } else
-                                self.addFieldError(fieldName, "Field is required");
+                                self.addFieldError(fieldName, "required");
                         }
                     }
                 }
@@ -285,7 +285,7 @@
         var self = this;
         _(self.erroredFields).each( function( value, key ) {
             if(self.fields[key].message){
-                self.erroredFields[key].message = self.erroredFields[key].required ? "Required" : self.fields[key].message;
+                self.erroredFields[key].message = self.fields[key].required ? "*Required Field*" : self.fields[key].message;
             }
         });
     };

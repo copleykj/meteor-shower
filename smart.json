@@ -3,7 +3,7 @@
     "description": "A dual client/server side form-data validation and transformation package.",
     "homepage": "https://github.com/copleykj/Mesosphere",
     "author": "Kelly Copley <copleykj@gmail.com>",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "git": "https://github.com/copleykj/Mesosphere.git",
     "packages": {
         "underscore-string": {}
