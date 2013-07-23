@@ -285,7 +285,7 @@
         var self = this;
         _(self.erroredFields).each( function( value, key ) {
             if(self.fields[key].message){
-                self.erroredFields[key].message = self.fields[key].required ? "*Required Field*" : self.fields[key].message;
+                self.erroredFields[key].message = self.erroredFields[key].required && ? "*Required Field*" : self.fields[key].message;
             }
         });
     };
