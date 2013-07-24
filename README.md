@@ -92,7 +92,7 @@ Current aggregation functions are:
 * avg - calculates the average of specified fields.
 * join - concatenates the values of the specified fields. Takes optional separator argument.
 * arraySet - creates new array of values of the specified fields.
-* objectSet - creates new object of key:value pairs of specified fields.
+* objectSet - creates new object of key:value pairs of specified fields. Takes an optional argument.  When set to true it removes the fields from the formData object.
 
 **fields** - This is a list of fields with each key being the name of a form field and the value being an object telling Mesosphere about that field. See next chapter.
 
