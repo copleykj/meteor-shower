@@ -3,7 +3,8 @@ Mesosphere({
     aggregate:{
         birthDate:["join", ["year", "month", "day"], " "],
         sum:["sum", ["int1", "int2", "int3"]],
-        avg:["avg", ["int1", "int2", "int3"]]
+        avg:["avg", ["int1", "int2", "int3"]],
+        birthDateObject:["objectSet", ["year", "month", "day"], true]
     },
     fields: {
         birthDate: {
@@ -14,6 +15,8 @@ Mesosphere({
             }
         }
     }});
+
+var birthDatedObjectTest = {year: '2005', month: 'May', day: '16'}
 
 Mesosphere.registerRule("minAge", function(fieldValue, ruleValue){
     var birthDate = new Date(fieldValue).getTime();
@@ -39,6 +42,15 @@ Tinytest.add("aggregates tests", function (test) {
         {"name": "day", "value": "16"}
     ]);
     test.isTrue(validationObject.errors !== false && validationObject.formData.birthDate==="2005 May 16");
+
+    // Test to see if the objectSet performs as expected
+    test.isTrue(validationObject.errors !== false && JSON.stringify(validationObject.formData.birthDateObject)===JSON.stringify(birthDatedObjectTest));
+
+    // Test to see that the fields are removed when the objectSet removeFields options is set to true
+    test.isTrue(validationObject.errors !== false && !('year' in validationObject.formData));
+    test.isTrue(validationObject.errors !== false && !('month' in validationObject.formData));
+    test.isTrue(validationObject.errors !== false && !('day' in validationObject.formData));
+
 
     validationObject = Mesosphere.aggregatesForm.validate([
         {"name": "int1", "value": "1"},

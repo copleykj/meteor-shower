@@ -37,10 +37,12 @@
             });
             return newField;
         },
-        objectSet: function(fields, formFieldsObject){
+        objectSet: function(fields, formFieldsObject, removeFields){
             var newField = {};
             _(fields).each( function(fieldName) {
                 newField[fieldName] = formFieldsObject[fieldName];
+                if(typeof removeFields !== 'undefined' && removeFields == true)
+                    delete formFieldsObject[fieldName]
             });
             return newField;
         }
