@@ -79,7 +79,7 @@ Mesosphere requires an object that describe the form and fields elements. This s
 **aggregate** - An object who's keys are the name of a new field to be created from a set of other form elements. The value for each key is an array with it's first element as the name of the aggregate function, an the second another array containing the names of the fields you would like to aggregate. A third element to the array can be added which will be passed as an argument to the aggregate function.
 
 ```javascript
-aggreagate:{
+aggregate:{
 	birthDate:["join", ["month", "day", "year"], " "]
 }
 ```
