@@ -264,7 +264,7 @@
 
         //remove any unwanted fields
         _(self.removeFields).each( function( value ) {
-           delete formFieldsObject['value'];
+           delete formFieldsObject[value];
         });
 
         if(_.isEmpty(self.erroredFields)){
