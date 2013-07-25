@@ -152,11 +152,12 @@
         }
     };
 
-    Form = function(fields, aggregates, onSuccess, onFailure){
+    Form = function(fields, aggregates, removeFields, onSuccess, onFailure){
         this.fields = fields;
         this.onSuccess = onSuccess;
         this.onFailure = onFailure;
         this.aggregates = aggregates;
+        this.removeFields = removeFields;
         this.erroredFields = {};
     };
 
@@ -259,6 +260,11 @@
             }
 
 
+        });
+
+        //remove any unwanted fields
+        _(self.removeFields).each( function( value ) {
+           delete formFieldsObject['value'];
         });
 
         if(_.isEmpty(self.erroredFields)){
@@ -368,7 +374,7 @@
         var selector = "";
         var formIdentifier = optionsObject.name || optionsObject.id;
 
-        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback, aggregate:{}}).extend(optionsObject);
+        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback}).extend(optionsObject);
 
         //Make sure they've got all the info we need and they haven't provided the same form information twice
         if(!formIdentifier)
@@ -379,7 +385,7 @@
             throw new Error("Form is already being validated");
 
         //Create a new form object scoped to Mesosphere.formName
-        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregate, optionsObject.onSuccess, optionsObject.onFailure);
+        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregate, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);
 
         //if this is the browser, set up a submit event handler.
         if(Meteor.isClient){
