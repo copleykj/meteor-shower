@@ -201,6 +201,10 @@
                                 self.addFieldError(fieldName, "required");
                         }
                     }
+
+                    if(field.required.whenFieldAbsent && _(formFieldsObject[field.required.whenFieldAbsent]).isUndefined()){
+                        self.addFieldError(fieldName, "required");
+                    }
                 }
 
             }
