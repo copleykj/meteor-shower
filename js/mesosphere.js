@@ -284,9 +284,7 @@
     Form.prototype.addMessages = function(){
         var self = this;
         _(self.erroredFields).each( function( value, key ) {
-            if(self.fields[key].message){
-                self.erroredFields[key].message = self.erroredFields[key].required ? "*Required Field*" : self.fields[key].message;
-            }
+            self.erroredFields[key].message = self.erroredFields[key].required ? "*Required Field*" : self.fields[key].message || "*Invalid Input*";
         });
     };
 
@@ -393,17 +391,19 @@
                 selector = '#'+optionsObject.id;
             }
 
-            //attach a submit event to the form
-            $(root.document).on('submit', selector, function (event) {
-                event.preventDefault();
+            $(function(){
+                //attach a submit event to the form
+                $(root.document.body).on('submit', selector, function (event) {
+                    event.preventDefault();
 
-                var formFields = getFormData(this);
+                    var formFields = getFormData(this);
 
-                if(_(optionsObject.method).isFunction()){
-                    optionsObject.method(formFields);
-                }else{
-                    Meteor.call(optionsObject.method, formFields);
-                }
+                    if(_(optionsObject.method).isFunction()){
+                        optionsObject.method(formFields);
+                    }else{
+                        Meteor.call(optionsObject.method, formFields);
+                    }
+                });
             });
         }
     };
