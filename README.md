@@ -14,7 +14,7 @@ A dual client/server side form data validation and transformation package for **
 * Frontend hooks
 * Extensible via api
 
-## Requirements
+## Dependencies
 
 The project depends on the following libraries:
 
@@ -22,10 +22,18 @@ The project depends on the following libraries:
 * underscore.js >= 1.3.3
 * underscore.string >= 2.0.0
 
-If you use **Meteorite**, there is nothing to do. Just type the following statement in  your project:
+## Installation
+If you use **Meteorite**, there is no need to worry about dependencies. Just type the following statement in your project:
 
     mrt add Mesosphere
 
+To include updates and bug fixes to Mesosphere in your project before they hit Atmosphere, update your projects smart.json to include the url of the beta branch on github.
+
+```javascript
+   Mesosphere:{
+      git:"https://github.com/copleykj/Mesosphere/tree/beta"
+   }
+```
 
 ## Usage
 
@@ -222,7 +230,7 @@ Mesosphere({
         msg: {
             required: true,
             format: function(val) { return val.indexOf("Thank you")},
-            message: "bad zip code"
+            message: "You didn't say thank you!"
         }
 });
 
