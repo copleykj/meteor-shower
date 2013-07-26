@@ -80,7 +80,8 @@ Mesosphere requires an object that describe the form and fields elements. This s
 
 ```javascript
 aggregate:{
-	birthDate:["join", ["month", "day", "year"], " "]
+	birthDate:["join", ["month", "day", "year"], " "],
+	fullName:["join", ["firstName", "LastName"], " "]
 }
 ```
 
@@ -93,6 +94,12 @@ Current aggregation functions are:
 * join - concatenates the values of the specified fields. Takes optional separator argument.
 * arraySet - creates new array of values of the specified fields.
 * objectSet - creates new object of key:value pairs of specified fields.
+
+**removeFields** - list of fields that should be removed from returned form values. Especially useful if you wish to remove fields that have been aggregated together into new fields.
+
+```javascript
+   removeFields["month", "day", "year", "firstName", "lastName"]
+```
 
 **fields** - This is a list of fields with each key being the name of a form field and the value being an object telling Mesosphere about that field. See next chapter.
 
@@ -109,7 +116,7 @@ fields:{
 
 ### Field description
 
-**required** - The required key tells Mesosphere if this is a required field or if the field is required dependently of another field. If required dependently the field can be conditionaly required based on another field value.
+**required** - The required key tells Mesosphere if this is a required field, if the field is required dependently of another field, or if the field is required only when the field is absent from the submitted fields. If required dependently the field can be conditionaly required based on another field value.
 
 Let's see this in practice:
 
@@ -131,6 +138,13 @@ Let's see this in practice:
    required:{
       dependsOn:"country",
       value:"USA"
+   }
+
+   or
+
+   // field is only required if other field is missing in form submission
+   required:{
+      whenFieldAbsent:"country"
    }
 ```
     
@@ -286,10 +300,11 @@ To achieve dual client/server validation, pass in the name of the Meteor server 
 ```javascript
 Meteor.methods({
     login:function(rawFormData){
-        var validationObject = Mesosphere.loginForm.validate(rawFormData);
-        if(!validationObject.errors){
-            //Do what we need to do here;
-        }
+        Mesosphere.loginForm.validate(rawFormData, function(errors, formFieldsObject){
+            if(!errors){
+               //Do what we need to do here;
+            }
+        });
     }
 });
 
