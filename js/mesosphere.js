@@ -7,7 +7,7 @@
     //Setup access to jQuery, Underscore and Meteor
     
     if(root.Package){
-        $=root.jQuery; _=root.Package.underscore_; Meteor=root.Package.meteor.Meteor;
+        $=root.jQuery; _=root.Package.underscore._; Meteor=root.Package.meteor.Meteor;
     }else{
         $=root.jQuery; _=root._; Meteor=root.Meteor;
     }
