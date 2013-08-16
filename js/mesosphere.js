@@ -12,6 +12,12 @@
         $=root.jQuery; _=root._; Meteor=root.Meteor;
     }
 
+    if (typeof exports !== 'undefined') {
+      exports.Mesosphere = Mesosphere;
+    } else {
+      root.Mesosphere = Mesosphere;
+    }
+
     Aggregates = {
         sum: function(fields, formFieldsObject){
             var sum = 0;
@@ -456,5 +462,4 @@
       Mesosphere.Transforms[name] = fn;
     };
 
-    root.Mesosphere = Mesosphere;
 }(this));
