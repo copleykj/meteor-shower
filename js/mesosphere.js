@@ -12,7 +12,7 @@
         $=root.jQuery; _=root._; Meteor=root.Meteor;
     }
 
-    if (typeof exports !== 'undefined') {
+    if (typeof exports !== 'undefined' && typeof Package !== 'undefined') {
       exports.Mesosphere = Mesosphere;
     } else {
       root.Mesosphere = Mesosphere;
