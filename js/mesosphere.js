@@ -456,12 +456,10 @@
       Mesosphere.Transforms[name] = fn;
     };
 
-    if (typeof exports !== 'undefined' && typeof Package !== 'undefined') {
-        console.log("Exporting Mesosphere");
-        exports.Mesosphere = Mesosphere;
-    } else {
-        console.log("Setting Root Mesosphere");
+    if (typeof exports === 'undefined' || typeof Package === 'undefined') {
         root.Mesosphere = Mesosphere;
+    } else {
+        exports.Mesosphere = Mesosphere;
     }
 
 }(this));
