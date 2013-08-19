@@ -12,14 +12,6 @@
         $=root.jQuery; _=root._; Meteor=root.Meteor;
     }
 
-    if (typeof exports !== 'undefined' && typeof Package !== 'undefined') {
-        console.log("Exporting Mesosphere");
-        exports.Mesosphere = Mesosphere;
-    } else {
-        console.log("Setting Root Mesosphere");
-        root.Mesosphere = Mesosphere;
-    }
-
     Aggregates = {
         sum: function(fields, formFieldsObject){
             var sum = 0;
@@ -463,5 +455,13 @@
       }
       Mesosphere.Transforms[name] = fn;
     };
+
+    if (typeof exports !== 'undefined' && typeof Package !== 'undefined') {
+        console.log("Exporting Mesosphere");
+        exports.Mesosphere = Mesosphere;
+    } else {
+        console.log("Setting Root Mesosphere");
+        root.Mesosphere = Mesosphere;
+    }
 
 }(this));
