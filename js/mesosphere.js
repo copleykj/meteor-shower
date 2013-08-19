@@ -13,9 +13,11 @@
     }
 
     if (typeof exports !== 'undefined' && typeof Package !== 'undefined') {
-      exports.Mesosphere = Mesosphere;
+        console.log("Exporting Mesosphere");
+        exports.Mesosphere = Mesosphere;
     } else {
-      root.Mesosphere = Mesosphere;
+        console.log("Setting Root Mesosphere");
+        root.Mesosphere = Mesosphere;
     }
 
     Aggregates = {
