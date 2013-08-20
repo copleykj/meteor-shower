@@ -4,7 +4,7 @@ Package.describe({
 
 Package.on_use(function (api, where) {
 
-    api.use(['jquery', 'underscore', 'underscore-string'], ['client', 'server']);
+    api.use(['jquery', 'underscore', 'underscore-string-latest'], ['client', 'server']);
     api.add_files(['js/pre.js','js/mesosphere.js','js/post.js'], ['client', 'server']);
     api.add_files('css/mesosphere.css', 'client');
     api.export('Mesosphere');
