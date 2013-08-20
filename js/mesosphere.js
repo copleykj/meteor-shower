@@ -5,7 +5,12 @@
     var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Aggregates, Formats, Transforms;
 
     //Setup access to jQuery, Underscore and Meteor
-    $=root.jQuery; _=root._; Meteor=root.Meteor;
+    
+    if(root.Package){
+        $=root.jQuery; _=root.Package.underscore._; Meteor=root.Package.meteor.Meteor;
+    }else{
+        $=root.jQuery; _=root._; Meteor=root.Meteor;
+    }
 
     Aggregates = {
         sum: function(fields, formFieldsObject){
@@ -451,5 +456,10 @@
       Mesosphere.Transforms[name] = fn;
     };
 
-    root.Mesosphere = Mesosphere;
+    if (typeof exports === 'undefined' || typeof Package === 'undefined') {
+        root.Mesosphere = Mesosphere;
+    } else {
+        exports.Mesosphere = Mesosphere;
+    }
+
 }(this));

@@ -6,6 +6,6 @@
     "version": "0.1.1",
     "git": "https://github.com/copleykj/Mesosphere.git",
     "packages": {
-        "underscore-string": {}
+        "underscore-string-latest": {}
     }
 }
