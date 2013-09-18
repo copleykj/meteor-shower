@@ -352,14 +352,11 @@
         var formData = $(formElem).serializeArray(), fileInputs = $(formElem).find("input[type=file]");
 
         fileInputs.each(function () {
-          var fileSize, fileType, fieldName = this.name;
+          var fileSize = 0, fileType = '', fieldName = this.name;
 
           if (this.files.length > 0) {
             fileSize = this.files[0].size;
             fileType = this.files[0].type;
-          } else {
-            fileSize = 0;
-            fileType = '';
           }
           formData.push({name: fieldName, value: fileSize, fileType: fileType, files: this.files});
         });
