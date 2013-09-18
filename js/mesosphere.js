@@ -225,29 +225,13 @@
 
                 // check the data format
                 if(field.format) {
-
-                    var format=field.format;
-
-                    if(_.isString(format)){
-                        format=Formats[format];
+                    if(_.isArray(fieldValue)){
+                       _(fieldValue).each( function( subValue, key ) {
+                           self.checkFormat(subValue, fieldName, field.format);
+                       });
+                    }else{
+                        self.checkFormat(fieldValue, fieldName, field.format);
                     }
-
-                    if(!format)
-                        throw new Error("Unknown format:"+field.format);
-                    else {
-                        if( _.isRegExp(format) ) {
-                            // it's a regular expression
-                            if(!format.test(fieldValue)){
-                                self.addFieldError(fieldName, "Invalid format");
-                            }
-                        } else {
-                            // it's a function
-                            if(!format(fieldValue)){
-                                self.addFieldError(fieldName, "Invalid format");
-                            }
-                        }
-                    }
-
                 }
 
                 // check rule sets
@@ -313,6 +297,30 @@
             this.erroredFields[fieldName][ruleName][key] = true;
         }else{
            this.erroredFields[fieldName][ruleName] = true;
+        }
+    };
+
+    Form.prototype.checkFormat = function(fieldValue, fieldName, fieldFormat) {
+        var format;
+        
+        if(_.isString(fieldFormat)){
+            format=Formats[fieldFormat];
+        }
+
+        if(!format)
+            throw new Error("Unknown format:"+fieldFormat);
+        else {
+            if( _.isRegExp(format) ) {
+                // it's a regular expression
+                if(!format.test(fieldValue)){
+                    self.addFieldError(fieldName, "Invalid format");
+                }
+            } else {
+                // it's a function
+                if(!format(fieldValue)){
+                    self.addFieldError(fieldName, "Invalid format");
+                }
+            }
         }
     };
 
