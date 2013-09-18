@@ -12,7 +12,7 @@ Package.on_use(function (api, where) {
 
 Package.on_test(function (api) {
 
-    api.use(['jquery', 'underscore', 'test-helpers', 'tinytest', 'underscore-string']);
+    api.use(['jquery', 'underscore', 'test-helpers', 'tinytest', 'underscore-string-latest']);
     api.add_files('js/mesosphere.js', ['client', 'server']);
 
     api.add_files('tests/required_tests.js', ['client', 'server']);
