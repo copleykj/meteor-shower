@@ -330,7 +330,7 @@
 
         _(formFields).each( function( field ) {
             var name = field.name;
-            var value = field.fileType ? _(field).pick(value, fileType) : field.value;
+            var value = field.fileType ? _(field).pick(value, field.fileType) : field.value;
 
             if(_.isUndefined(formFieldsObject[name])){
                 formFieldsObject[name] = value;
