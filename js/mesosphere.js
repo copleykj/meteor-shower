@@ -117,7 +117,7 @@
         },
         //TODO: equalsField, notEqualsField
         maxFileSize: function(fieldValue, ruleValue) {
-            return this.maxValue(fieldValue.value, ruleValue);
+            return this.maxValue(fieldValue.fileSize, ruleValue);
         },
         acceptedFileTypes: function(fieldValue, ruleValue) {
             var fileType = fieldValue.FileType;
