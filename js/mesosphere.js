@@ -330,7 +330,7 @@
 
         _(formFields).each( function( field ) {
             var name = field.name;
-            var value = field.fileType ? _(field).pick(value, fileType) : field.value;
+            var value = field.fileSize ? _(field).pick(['fileType', 'fileSize', 'files']) : field.value;
 
             if(_.isUndefined(formFieldsObject[name])){
                 formFieldsObject[name] = value;
@@ -367,7 +367,7 @@
             fileSize = this.files[0].size;
             fileType = this.files[0].type;
           }
-          formData.push({name: fieldName, value: fileSize, fileType: fileType, files: this.files});
+          formData.push({name: fieldName, fileSize: fileSize, fileType: fileType, files: this.files});
         });
 
         return formData;
