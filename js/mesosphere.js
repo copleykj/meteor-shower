@@ -357,20 +357,22 @@
         return fieldValue;
     };
 
-    var getFormData = function(formElem){
-        var formData = $(formElem).serializeArray(), fileInputs = $(formElem).find("input[type=file]");
+    var Utils = {
+        getFormData: function(formElem){
+            var formData = $(formElem).serializeArray(), fileInputs = $(formElem).find("input[type=file]");
 
-        fileInputs.each(function () {
-          var fileSize = 0, fileType = '', fieldName = this.name;
+            fileInputs.each(function () {
+              var fileSize = 0, fileType = '', fieldName = this.name;
 
-          if (this.files.length > 0) {
-            fileSize = this.files[0].size;
-            fileType = this.files[0].type;
-          }
-          formData.push({name: fieldName, fileSize: fileSize, fileType: fileType, files: this.files});
-        });
+              if (this.files.length > 0) {
+                fileSize = this.files[0].size;
+                fileType = this.files[0].type;
+              }
+              formData.push({name: fieldName, fileSize: fileSize, fileType: fileType, files: this.files});
+            });
 
-        return formData;
+            return formData;
+        }
     };
 
     var failureCallback = function(erroredFields){
@@ -417,7 +419,7 @@
                 $(root.document.body).on('submit', selector, function (event) {
                     event.preventDefault();
 
-                    var formFields = getFormData(this);
+                    var formFields = Utils.getFormData(this);
 
                     if(_(optionsObject.method).isFunction()){
                         optionsObject.method(formFields);
@@ -433,6 +435,7 @@
     Mesosphere.Transforms = Transforms;
     Mesosphere.Formats = Formats;
     Mesosphere.Aggregates = Aggregates;
+    Mesosphere.Utils = Utils;
 
     Mesosphere.registerAggregate = function (name, fn) {
       if (Mesosphere.Aggregates[name]) {
