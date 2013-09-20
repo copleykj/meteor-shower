@@ -407,9 +407,9 @@
 
             //decide which selector to use to grab the form handle
             if(optionsObject.name){
-                selector = 'form[name='+optionsObject.name+']';
+                selector = 'form[name='+formIdentifier+']';
             }else{
-                selector = '#'+optionsObject.id;
+                selector = '#'+formIdentifier;
             }
 
             $(function(){
