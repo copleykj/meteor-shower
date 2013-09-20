@@ -170,6 +170,7 @@ Mesosphere({
             format: "alphanumeric",
             message: "That's a weird first name!"
         }
+    }
 });
 
 ```
