@@ -414,20 +414,22 @@
                 selector = '#'+formIdentifier;
             }
 
-            $(function(){
-                //attach a submit event to the form
-                $(root.document.body).on('submit', selector, function (event) {
-                    event.preventDefault();
+            if(!optionsObject.disableSubmit){
+                $(function(){
+                    //attach a submit event to the form
+                    $(root.document.body).on('submit', selector, function (event) {
+                        event.preventDefault();
 
-                    var formFields = Utils.getFormData(this);
+                        var formFields = Utils.getFormData(this);
 
-                    if(_(optionsObject.method).isFunction()){
-                        optionsObject.method(formFields);
-                    }else{
-                        Meteor.call(optionsObject.method, formFields);
-                    }
+                        if(_(optionsObject.method).isFunction()){
+                            optionsObject.method(formFields);
+                        }else{
+                            Meteor.call(optionsObject.method, formFields);
+                        }
+                    });
                 });
-            });
+            }
         }
     };
 
