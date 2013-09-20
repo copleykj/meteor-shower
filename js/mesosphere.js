@@ -5,7 +5,7 @@
     var $, _, Meteor, Helpers, Rules, Form, Mesosphere, Aggregates, Formats, Transforms;
 
     //Setup access to jQuery, Underscore and Meteor
-    
+
     if(root.Package){
         $=root.jQuery; _=root.Package.underscore._; Meteor=root.Package.meteor.Meteor;
     }else{
@@ -168,7 +168,7 @@
 
     Form.prototype.validate = function (formFields, callback){
         var self = this, result, validationObject;
-        var formFieldsObject = this.formToObject(formFields);
+        var formFieldsObject = _.isArray(formFields) ? this.formToObject(formFields) : formFields;
 
         self.erroredFields = {};
 
@@ -303,7 +303,7 @@
     Form.prototype.checkFormat = function(fieldValue, fieldName, fieldFormat) {
         var self = this;
         var format;
-        
+
         if(_.isString(fieldFormat)){
             format=Formats[fieldFormat];
         }
