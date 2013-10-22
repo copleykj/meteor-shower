@@ -421,13 +421,16 @@
                 if(optionsObject.template && _(optionsObject.template).isString()){
                     events['submit '+ selector] = function (event) {
                         var formFields = Mesosphere.Utils.getFormData(event.target);
+
+                        event.preventDefault();
+
                         if(_(optionsObject.method).isFunction()){
                             optionsObject.method(formFields, this);
                         }else{
                             Meteor.call(optionsObject.method, formFields, this);
                         }
                     };
-                    Template[optionsObject.template]._tmpl_data.events(events);
+                    Template[optionsObject.template].events(events);
                 }else{
                     $(function(){
                         //attach a submit event to the form
