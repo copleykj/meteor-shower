@@ -263,12 +263,12 @@
         if(_.isEmpty(self.erroredFields)){
             self.erroredFields = false;
             if(Meteor.isClient){
-                self.onSuccess(formFieldsObject);
+                self.onSuccess(formFieldsObject, $(self.selector));
             }
         }else{
             self.addMessages();
             if(Meteor.isClient){
-                self.onFailure(self.erroredFields);
+                self.onFailure(self.erroredFields, $(self.selector));
             }
         }
 
@@ -375,14 +375,15 @@
         }
     };
 
-    var failureCallback = function(erroredFields){
+    var failureCallback = function(erroredFields, formHandle){
         $(".meso-error").text("");
         _(erroredFields).each( function( value, key, errObj ) {
-            $("#"+key+"-error").addClass("meso-error").text(value.message);
+            formHandle.find("#"+key+"-error").addClass("meso-error").text(value.message);
         });
     };
 
-    var successCallback = function(){
+    var successCallback = function(formHandle){
+        formHandle[0].reset();
         $(".meso-error").text("");
         $(".meso-error").removeClass("meso-error");
     };
