@@ -407,6 +407,7 @@
 
         //if this is the browser, set up a submit event handler.
         if(Meteor.isClient){
+            var events = {};
 
             //decide which selector to use to grab the form handle
             if(optionsObject.name){
@@ -416,21 +417,38 @@
             }
 
             if(!optionsObject.disableSubmit){
-                $(function(){
-                    //attach a submit event to the form
-                    $(root.document.body).on('submit', selector, function (event) {
-                        event.preventDefault();
 
-                        var formFields = Utils.getFormData(this);
-
+                if(optionsObject.template && _(optionsObject.template).isString()){
+                    events['submit '+ selector] = function (event) {
+                        var formFields = Mesosphere.Utils.getFormData(event.target);
                         if(_(optionsObject.method).isFunction()){
-                            optionsObject.method(formFields);
+                            optionsObject.method(formFields, this);
                         }else{
-                            Meteor.call(optionsObject.method, formFields);
+                            Meteor.call(optionsObject.method, formFields, this);
                         }
+                    };
+                    Template[optionsObject.template]._tmpl_data.events(events);
+                }else{
+                    $(function(){
+                        //attach a submit event to the form
+                        $(root.document.body).on('submit', selector, function (event) {
+                            event.preventDefault();
+
+                            var formFields = Utils.getFormData(this);
+
+                            if(_(optionsObject.method).isFunction()){
+                                optionsObject.method(formFields);
+                            }else{
+                                Meteor.call(optionsObject.method, formFields);
+                            }
+                        });
                     });
-                });
+                }
+
+
             }
+
+
         }
     };
 
