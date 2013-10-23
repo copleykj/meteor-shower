@@ -164,6 +164,11 @@
         this.aggregates = aggregates;
         this.removeFields = removeFields;
         this.erroredFields = {};
+        this.selector = "";
+    };
+
+    Form.prototype.setSelector = function(selector){
+        this.selector = selector;
     };
 
     Form.prototype.validate = function (formFields, callback){
@@ -382,7 +387,7 @@
         });
     };
 
-    var successCallback = function(formHandle){
+    var successCallback = function(formData, formHandle){
         formHandle[0].reset();
         $(".meso-error").text("");
         $(".meso-error").removeClass("meso-error");
@@ -415,6 +420,9 @@
             }else{
                 selector = '#'+formIdentifier;
             }
+
+            
+            Mesosphere[formIdentifier].setSelector(selector);
 
             if(!optionsObject.disableSubmit){
 
