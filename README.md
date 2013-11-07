@@ -6,32 +6,24 @@ A dual client/server side form data validation and transformation package for **
 
 * Same validations logic on client **and** server sides
 * Clean validation workflow with
-  * Transformations: trim, capitalize, clean...
-  * Formats: email, float, boolean, url, creditcard...
-  * Rules: min, max, equals...
-* Field Aggregation
+    - Transformations: trim, capitalize, clean...
+    - Formats: email, float, boolean, url, creditcard...
+    - Rules: min, max, equals...
+    - Field Aggregation: sum, avg, join
 * Conditional required fields
 * Frontend hooks
 * Extensible via api
 
-## Dependencies
-
-The project depends on the following libraries:
-
-* jQuery >= 1.7
-* underscore.js >= 1.3.3
-* underscore.string >= 2.0.0
-
 ## Installation
-If you use **Meteorite**, there is no need to worry about dependencies. Just type the following statement in your project:
 
-    mrt add Mesosphere
+`mrt add Mesosphere`
 
-To include updates and bug fixes to Mesosphere in your project before they hit Atmosphere, update your projects smart.json to include the url of the beta branch on github.
+To include updates and bug fixes to Mesosphere in your project before they hit Atmosphere, update your projects smart.json to point to the beta branch on github.
 
 ```javascript
    Mesosphere:{
-      git:"https://github.com/copleykj/Mesosphere/tree/beta"
+      "git":"https://github.com/copleykj/Mesosphere.git",
+      "branch":"beta"
    }
 ```
 
@@ -50,9 +42,10 @@ When invoked, Mesosphere creates a new form object and stores it as a property o
 
 ### Validation
 
-    var validationObject = Mesosphere.loginForm.validate(formData);
 
-To validate a form, call the **validate()** function on the form object and it will return an object containing errors and validated/transformed form-data. Validation can happen client and server side.
+To validate a form, call the **validate()** method on the form object and it will return an object containing errors and validated/transformed form-data. Validation can happen client and server side.
+
+`var validationObject = Mesosphere.loginForm.validate(rawFormData);`
 
 For instance, the above call could return:
 
@@ -61,7 +54,7 @@ validationObject:{
     errors:{
         username:{
             required:true,
-            message:"Required"
+            message:"*Required Field*"
         }
     },
     formData:{
@@ -70,9 +63,17 @@ validationObject:{
     }
 }
 ```
+If there are no errors, **validationObject.errors** will be empty;
 
-If there are no errors, **validationObject.errors equals false**;
-The validation workflow is processed as follows: first the fields are _transformed_, then checked for _required_, compared aginst their _format_ and finally evaluated against each _rule_
+You can also supply a callback as the second parameter of the **validate()** method. In this case the validation object will not be returned as it was in the above example, but split and passed as parameters to the callback. The call back will be passed the errors object as the first parameter and the formData object as the second. 
+
+```javascript
+Mesosphere.loginForm.validate(rawFormData, function(errors, formData){
+
+});
+```
+
+The validation workflow is processed as follows: first the fields are aggregated, checked for requirement, and transformed, They are then compared aginst their _format_ and evaluated against each _rule_. Finally any fields specified by _removeFields_ are removed.
     
 ## Form description
 
@@ -81,6 +82,10 @@ Mesosphere requires an object that describe the form and fields elements. This s
 ### Basics elements
 
 **name/id** - The form must contain either a name or an id key which corresponds to the name or id of the form element in your html. This will create a new form object scoped to **Mesosphere.formName** or **Mesosphere.formId**. These accessors are the main access point to any validation checks.
+
+**template** - (Optional) The name of the template that contains the form. If specified, Mesosphere will attach the submit event to the template otherwise it will attache the submit using jQuery. Attaching via the template will cause the data context from the template to be passed to the validation call back. *This is completely useless when combined with the* **disableSubmit** *option*
+
+**disableSubmit** - If true, Mesosphere will not validate the form when it is submitted and it will be up to you to handle this. *When using this option the Mesosphere.Utils.getFromData() method can be useful.*
 
 **method** - The name of an optional remote method to call. If you pass in a string for the method, Mesosphere will call the Meteor server method by this name, if you pass in a function then it will call the function. Either way it passes one argument to the method or function which is the raw data taken from the form.
 
@@ -272,7 +277,7 @@ The list of predefined rules is the following:
 
 ### Error management
 
-**onFailure** - The client side callback when validation has failed. When this is called it passes in an erroredFields object which has each field that failed validation, which rules it failed and the message you provided.
+**onFailure** - The client side callback when validation has failed. This gets passed an erroredFields object as the first parameter, which has each field that failed validation, which rules it failed and the message you provided. The second parmeter passed is a jQuery handle to the form.
 
 By default this tries to insert the error message provided in an element with an id of fieldname-error
 
@@ -290,12 +295,12 @@ onFailure: function(erroredFields){
 }
 ```
 
-**onSuccess** - The client side callback when validation has succeeded. This is passed an object of validated and transformed form-data as *key:value* pairs. By default this just clears all the displayed errors.
+**onSuccess** - The client side callback when validation has succeeded. This is passed an object of validated and transformed form-data as *key:value* pairs as the first parameter, and a jQuery handle of the form as the second. By default this just clears all the displayed errors.
 
 This, like the onFailure callback can maintain and build upon the default functionality by calling the *successCallback*. This however does not require you to pass in the form-data since it doesn't use it.
 
 ```javascript
-onSuccess: function(formData){
+onSuccess: function(formData, formHandle){
    //custom code here
    successCallback();
 }
@@ -304,11 +309,13 @@ onSuccess: function(formData){
 
 ### Dual client/server validation
 
-To achieve dual client/server validation, pass in the name of the Meteor server method as a string to the method attribute of the formDescriptionObject. On the client, Mesosphere will then call the method when the form is submitted, passing in the form data. Then use the forms validate function in the server method and pass in the form-data.
+To achieve dual client/server validation, pass in the name of the Meteor server method as a string to the method attribute of the formDescriptionObject. This method will be passed the unvalidated form data, and if a template was specified it will pass the template context as the second param. If data is available from the template context, this give access to it. e.g `templateContext._id`. 
+
+On the client, Mesosphere will then call the method when the form is submitted, passing in the form data. Then use the forms validate function in the server method and pass in the form data and specify the validation callback. This callback is passed an errors object as its first parameter which is empty if no fields errored. The second parameter passed is an object containing the validated and tranformed data for further manipulation or storage.
 
 ```javascript
 Meteor.methods({
-    login:function(rawFormData){
+    login:function(rawFormData, templateData){
         Mesosphere.loginForm.validate(rawFormData, function(errors, formFieldsObject){
             if(!errors){
                //Do what we need to do here;
@@ -319,14 +326,15 @@ Meteor.methods({
 
 ```
 
-Mesosphere takes one argument. This argument is an object describing the form, how to validate and transform the data, the Meteor method to use, and the client side callbacks.
+Next call Mesosphere to wrap your form for validation. Mesosphere takes one argument. This argument is an object describing the form, how to validate and transform the data, the Meteor method to use, an optional template name to attach the submit event to, and the client side callbacks.
 
 Simple example:
 
 ```javascript
 Mesosphere({
     name:"loginForm",
-    method:'login',
+    method:"login",
+    template:"loginTemplate",
     fields:{
         username:{
             required:true,
@@ -345,7 +353,11 @@ Mesosphere({
 });
 ```
 
+## Mesosphere.Utils
 
+###getFormData
+
+The getFormData Method is exposed as `Mesosphere.Utils.getFormData(formReference)`. This is useful when handling form events yourself. You will need to pass in a reference to the form as the first parameter.
 
 
 ## Extending
@@ -389,7 +401,7 @@ Mesosphere({
 
 ## Complete Usage Example
 
-The project comes with a fully functional demonstration and unit tests.
+For now the example has been removed. Examples are coming shortly as a Meteor site available as a repository that can be cloned an ran or viewed on the meteor.com site.
     
 ## Contribution
 
