@@ -408,7 +408,7 @@
             throw new Error("Form is already being validated");
 
         //Create a new form object scoped to Mesosphere.formName
-        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregate, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);
+        Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);
 
         //if this is the browser, set up a submit event handler.
         if(Meteor.isClient){
@@ -470,10 +470,10 @@
     Mesosphere.Utils = Utils;
 
     Mesosphere.registerAggregate = function (name, fn) {
-      if (Mesosphere.Aggregates[name]) {
-        throw new Error(name + " is already defined as a aggregate.");
-      }
-      Mesosphere.Transforms[name] = fn;
+        if (Mesosphere.Aggregates[name]) {
+            throw new Error(name + " is already defined as a aggregate.");
+        }
+        Mesosphere.Aggregates[name] = fn;
     };
 
     Mesosphere.registerFormat = function (name, fn) {
