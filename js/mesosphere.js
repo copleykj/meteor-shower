@@ -377,27 +377,27 @@
             });
 
             return formData;
+        },
+        failureCallback: function(erroredFields, formHandle){
+            $(".meso-error").text("");
+            _(erroredFields).each( function( value, key, errObj ) {
+                formHandle.find("#"+key+"-error").addClass("meso-error").text(value.message);
+            });
+        },
+        successCallback:function(formData, formHandle){
+            formHandle[0].reset();
+            $(".meso-error").text("");
+            $(".meso-error").removeClass("meso-error");
         }
     };
 
-    var failureCallback = function(erroredFields, formHandle){
-        $(".meso-error").text("");
-        _(erroredFields).each( function( value, key, errObj ) {
-            formHandle.find("#"+key+"-error").addClass("meso-error").text(value.message);
-        });
-    };
 
-    var successCallback = function(formData, formHandle){
-        formHandle[0].reset();
-        $(".meso-error").text("");
-        $(".meso-error").removeClass("meso-error");
-    };
 
     Mesosphere = function(optionsObject){
         var selector = "";
         var formIdentifier = optionsObject.name || optionsObject.id;
 
-        optionsObject = _({onSuccess:successCallback, onFailure:failureCallback}).extend(optionsObject);
+        optionsObject = _({onSuccess:Utils.successCallback, onFailure:Utils.failureCallback}).extend(optionsObject);
 
         //Make sure they've got all the info we need and they haven't provided the same form information twice
         if(!formIdentifier)
