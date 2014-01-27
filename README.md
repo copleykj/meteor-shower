@@ -1,6 +1,6 @@
 # Mesosphere
 
-A dual client/server side form data validation and transformation package for **Meteor**
+A dual client/server side form data validation, transformation, and aggregation package for **Meteor**
 
 ## Features
 
@@ -398,10 +398,15 @@ Mesosphere({
 });
 
 ```
+## Sublime Text Snippets
+
+A set of Mesosphere snippets for Sublime Text are available here: https://github.com/copleykj/mesosphere-snippets
+
+This is not a Sublime Text package so you will have to install it manually. If anyone would like to tackle the task of turning it onto a Sublime Text Package please feel free to fork and do so.
 
 ## Complete Usage Example
 
-For now the example has been removed. Examples are coming shortly as a Meteor site available as a repository that can be cloned an ran or viewed on the meteor.com site.
+For now the example has been removed. Examples are coming shortly as a Meteor site available as a repository that can be cloned and ran or viewed on the meteor.com site.
     
 ## Contribution
 
