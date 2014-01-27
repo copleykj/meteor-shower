@@ -289,9 +289,9 @@ For example for a field with a name of username, this function will try to inser
 When overriding the default call back you can maintain default functionality, while building upon it, by calling the *failureCallback* function and passing in the erroredFields object that was passed to the onFailure callback.
 
 ```javascript
-onFailure: function(erroredFields){
+onFailure: function(erroredFields, formHandle){
    //custom code here
-   failureCallback(erroredFields);
+   Mesosphere.Utils.failureCallback(erroredFields, formHandle);
 }
 ```
 
@@ -302,7 +302,7 @@ This, like the onFailure callback can maintain and build upon the default functi
 ```javascript
 onSuccess: function(formData, formHandle){
    //custom code here
-   successCallback();
+   Mesosphere.Utils.successCallback(formData, formHandle);
 }
 ```
 
@@ -359,6 +359,13 @@ Mesosphere({
 
 The getFormData Method is exposed as `Mesosphere.Utils.getFormData(formReference)`. This is useful when handling form events yourself. You will need to pass in a reference to the form as the first parameter.
 
+### successCallback
+
+The successCallback method is exposed as `Mesosphere.Utils.successCallback(formData, formHandle). This is the default client side success callback used to reset the form and clear the form errors. This is useful if you replace the onSuccess callback in a form description and wish to call this to retain default functionality while adding your own.
+
+### failureCallback
+
+The failureCallback method is exposed as `Mesosphere.Utils.failureCallback(erroredFields, formHandle). This is the default client side failure callback used to reset the form and clear the form errors. This is useful if you replace the onFailure callback in a form description and wish to call this to retain default functionality while adding your own.
 
 ## Extending
 
