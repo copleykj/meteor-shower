@@ -311,6 +311,8 @@
 
         if(_.isString(fieldFormat)){
             format=Formats[fieldFormat];
+        }else{
+            format = fieldFormat;
         }
 
         if(!format)
