@@ -385,7 +385,7 @@
             });
         },
         successCallback:function(formData, formHandle){
-            formHandle[0].reset();
+            formHandle[0].reset && formHandle[0].reset();
             $(".meso-error").text("");
             $(".meso-error").removeClass("meso-error");
         }
