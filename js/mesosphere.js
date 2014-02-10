@@ -311,22 +311,24 @@
 
         if(_.isString(fieldFormat)){
             format=Formats[fieldFormat];
+        } else {
+            format = fieldFormat;
         }
 
-        if(!format)
-            throw new Error("Unknown format:"+fieldFormat);
-        else {
-            if( _.isRegExp(format) ) {
-                // it's a regular expression
-                if(!format.test(fieldValue)){
-                    self.addFieldError(fieldName, "Invalid format");
-                }
-            } else {
-                // it's a function
-                if(!format(fieldValue)){
-                    self.addFieldError(fieldName, "Invalid format");
-                }
+        if(_.isRegExp(format)) {
+            // it's a regular expression
+            if(!format.test(fieldValue)){
+                self.addFieldError(fieldName, "Invalid format");
             }
+        } else if(_.isFunction(format)) {
+            // it's a function
+            if(!format(fieldValue)){
+                self.addFieldError(fieldName, "Invalid format");
+            }
+        } else if(_.isUndefined(format)) {
+            throw new Error("Undefined format:"+fieldFormat);
+        } else {
+            throw new Error("Unknown format:"+fieldFormat);
         }
     };
 
@@ -421,7 +423,7 @@
                 selector = '#'+formIdentifier;
             }
 
-            
+
             Mesosphere[formIdentifier].setSelector(selector);
 
             if(!optionsObject.disableSubmit){
