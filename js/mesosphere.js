@@ -165,7 +165,14 @@
         this.removeFields = removeFields;
         this.erroredFields = {};
         this.selector = "";
+
+        this._errorsDep = new Deps.Dependency();
     };
+
+    Form.prototype.getErrors = function () {
+        this._errorsDep.depend();
+        return this.erroredFields;
+    }
 
     Form.prototype.setSelector = function(selector){
         this.selector = selector;
@@ -176,6 +183,8 @@
         var formFieldsObject = _.isArray(formFields) ? this.formToObject(formFields) : formFields;
 
         self.erroredFields = {};
+        // We probably don't need to handle onInvalidate, since there is only one instance per form.
+        self._errorsDep.changed();
 
         //aggregate fields first so we can validate the new field later.
         _(self.aggregates).each( function(aggregateInfo, newFieldName) {
@@ -282,7 +291,6 @@
         }else{
             return {errors:self.erroredFields, formData:formFieldsObject};
         }
-
     };
 
     Form.prototype.addMessages = function(){
