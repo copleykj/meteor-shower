@@ -288,7 +288,7 @@
     Form.prototype.addMessages = function(){
         var self = this;
         _(self.erroredFields).each( function( value, key ) {
-            self.erroredFields[key].message = self.erroredFields[key].required ? "*Required Field*" : self.fields[key].message || "*Invalid Input*";
+            self.erroredFields[key].message = self.erroredFields[key].required ? self.fields[key].requiredMessage || "*Required Field*" : self.fields[key].message || "*Invalid Input*";
         });
     };
 
