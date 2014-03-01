@@ -161,7 +161,9 @@ Let's see this in practice:
    }
 ```
     
-**message** - The message key is the message added to the fields in the erroredFields object which is returned from the validate function and passed to the *onFailure* callback when validation fails. if message is not defined, the error labelling is simply ignored.
+**message** - The message key is the message added to the fields in the erroredFields object which is returned from the validate function and passed to the *onFailure* callback when validation fails. if message is not defined, the error message is set to *\*Invalid Input\**
+
+**requiredMessage** - The requiredMessage key is added to the fields in the erroredFields object when a required field is not present and is returned from the validate function and passed to the *onFailure* callback. If requiredMessage is not defined the error message is set to *\*Required Field\**
 
 #### Transformations
 
