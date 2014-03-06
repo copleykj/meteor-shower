@@ -85,14 +85,14 @@ Mesosphere requires an object that describe the form and fields elements. This s
 
 **template** - (Optional) The name of the template that contains the form. If specified, Mesosphere will attach the submit event to the template otherwise it will attache the submit using jQuery. Attaching via the template will cause the data context from the template to be passed to the validation call back. *This is completely useless when combined with the* **disableSubmit** *option*
 
-**disableSubmit** - If true, Mesosphere will not validate the form when it is submitted and it will be up to you to handle this. *When using this option the Mesosphere.Utils.getFromData() method can be useful.*
+**disableSubmit** - If true, Mesosphere will not validate the form when it is submitted and it will be up to you to handle this. *When using this option the Mesosphere.Utils.getFormData() method can be useful.*
 
 **method** - The name of an optional remote method to call. If you pass in a string for the method, Mesosphere will call the Meteor server method by this name, if you pass in a function then it will call the function. Either way it passes one argument to the method or function which is the raw data taken from the form.
 
-**aggregate** - An object who's keys are the name of a new field to be created from a set of other form elements. The value for each key is an array with it's first element as the name of the aggregate function, an the second another array containing the names of the fields you would like to aggregate. A third element to the array can be added which will be passed as an argument to the aggregate function.
+**aggregates** - An object who's keys are the name of a new field to be created from a set of other form elements. The value for each key is an array with it's first element as the name of the aggregate function, an the second another array containing the names of the fields you would like to aggregate. A third element to the array can be added which will be passed as an argument to the aggregate function.
 
 ```javascript
-aggregate:{
+aggregates:{
 	birthDate:["join", ["month", "day", "year"], " "],
 	fullName:["join", ["firstName", "LastName"], " "]
 }
