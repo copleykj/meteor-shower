@@ -1,5 +1,7 @@
 # Mesosphere
 
+[![Gitter chat](https://badges.gitter.im/copleykj/Mesosphere.png)](https://gitter.im/copleykj/Mesosphere)
+
 A dual client/server side form data validation, transformation, and aggregation package for **Meteor**
 
 ## Features
