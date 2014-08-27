@@ -18,7 +18,7 @@ A dual client/server side form data validation, transformation, and aggregation 
 
 ## Installation
 
-`mrt add Mesosphere`
+`meteor add copleykj:mesosphere`
 
 To include updates and bug fixes to Mesosphere in your project before they hit Atmosphere, update your projects smart.json to point to the beta branch on github.
 

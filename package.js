@@ -1,7 +1,7 @@
 Package.describe({
     summary: "A form-data validation and transformation package for Meteor",
-  version: "0.1.9",
-  git: "https://github.com/copleykj/Mesosphere.git"
+    version: "0.1.9",
+    git: "https://github.com/copleykj/mesosphere.git"
 });
 
 Package.on_use(function (api, where) {
