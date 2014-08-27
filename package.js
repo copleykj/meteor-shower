@@ -1,6 +1,6 @@
 Package.describe({
     summary: "A form-data validation and transformation package for Meteor",
-    version: "0.1.9",
+    version: "0.1.10",
     git: "https://github.com/copleykj/mesosphere.git"
 });
 
@@ -15,7 +15,7 @@ Package.on_use(function (api, where) {
 
 Package.on_test(function (api) {
 
-    api.use(['jquery', 'underscore', 'test-helpers', 'tinytest', 'underscore-string-latest']);
+    api.use(['jquery', 'underscore', 'test-helpers', 'tinytest', 'mrt:underscore-string-latest@2.3.3']);
     api.add_files('js/mesosphere.js', ['client', 'server']);
 
     api.add_files('tests/required_tests.js', ['client', 'server']);
