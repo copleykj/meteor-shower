@@ -434,10 +434,12 @@
 
                         event.preventDefault();
 
-                        if(_(optionsObject.method).isFunction()){
-                            optionsObject.method(formFields, this);
-                        }else{
-                            Meteor.call(optionsObject.method, formFields, this);
+                        if (optionsObject.method) { 
+                            if(_(optionsObject.method).isFunction()){
+                                optionsObject.method(formFields, this);
+                            }else{
+                                Meteor.call(optionsObject.method, formFields, this);
+                            }
                         }
                     };
                     Template[optionsObject.template].events(events);
@@ -449,10 +451,12 @@
 
                             var formFields = Utils.getFormData(this);
 
-                            if(_(optionsObject.method).isFunction()){
-                                optionsObject.method(formFields);
-                            }else{
-                                Meteor.call(optionsObject.method, formFields);
+                            if (optionsObject.method) { 
+                                if(_(optionsObject.method).isFunction()){
+                                    optionsObject.method(formFields);
+                                }else{
+                                    Meteor.call(optionsObject.method, formFields);
+                                }
                             }
                         });
                     });
