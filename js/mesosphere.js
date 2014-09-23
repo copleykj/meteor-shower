@@ -157,12 +157,13 @@
         }
     };
 
-    Form = function(fields, aggregates, removeFields, onSuccess, onFailure){
+    Form = function(fields, aggregates, removeFields, onSuccess, onFailure, onSubmit){
         this.fields = fields;
         this.onSuccess = onSuccess;
         this.onFailure = onFailure;
         this.aggregates = aggregates;
         this.removeFields = removeFields;
+        this.onSubmit = onSubmit;
         this.erroredFields = {};
         this.selector = "";
     };
@@ -423,16 +424,18 @@
                 selector = '#'+formIdentifier;
             }
 
-            
-            Mesosphere[formIdentifier].setSelector(selector);
 
             if(!optionsObject.disableSubmit){
 
                 if(optionsObject.template && _(optionsObject.template).isString()){
                     events['submit '+ selector] = function (event) {
                         var formFields = Mesosphere.Utils.getFormData(event.target);
-
+                        Mesosphere[formIdentifier].setSelector(event.target);
                         event.preventDefault();
+
+                        if(optionsObject.onSubmit){
+                            optionsObject.onSubmit(event);
+                        }
 
                         if(_(optionsObject.method).isFunction()){
                             optionsObject.method(formFields, this);
@@ -447,7 +450,12 @@
                         $(root.document.body).on('submit', selector, function (event) {
                             event.preventDefault();
 
+                            if(optionsObject.onSubmit){
+                                optionsObject.onSubmit(event);
+                            }
+
                             var formFields = Utils.getFormData(this);
+                            Mesosphere[formIdentifier].setSelector(event.target);
 
                             if(_(optionsObject.method).isFunction()){
                                 optionsObject.method(formFields);
