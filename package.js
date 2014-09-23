@@ -1,4 +1,5 @@
 Package.describe({
+    name:"copleykj:mesosphere",
     summary: "A form-data validation and transformation package for Meteor",
     version: "0.1.10",
     git: "https://github.com/copleykj/mesosphere.git"
