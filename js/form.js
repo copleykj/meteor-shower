@@ -19,16 +19,6 @@ Form.prototype.validate = function (formFields, callback){
 
     self.erroredFields = {};
 
-    //aggregate fields first so we can validate the new field later.
-    _(self.aggregates).each( function(aggregateInfo, newFieldName) {
-        var aggregateName = aggregateInfo[0];
-        var aggregateFields = aggregateInfo[1];
-        var aggregateArgs = aggregateInfo[2];
-        var newField = Aggregates[aggregateName](aggregateFields, formFieldsObject, aggregateArgs);
-
-        formFieldsObject[newFieldName] = newField;
-    });
-
     _(self.fields).each( function(field, fieldName) {
 
         // get the current value of the field that we are validating
@@ -100,6 +90,16 @@ Form.prototype.validate = function (formFields, callback){
         }
 
 
+    });
+
+    //aggregate here before we remove fields that could be part of aggregation.. We shouldn't need to validate these fields
+    _(self.aggregates).each( function(aggregateInfo, newFieldName) {
+        var aggregateName = aggregateInfo[0];
+        var aggregateFields = aggregateInfo[1];
+        var aggregateArgs = aggregateInfo[2];
+        var newField = Aggregates[aggregateName](aggregateFields, formFieldsObject, aggregateArgs);
+
+        formFieldsObject[newFieldName] = newField;
     });
 
     //remove any unwanted fields
