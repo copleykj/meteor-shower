@@ -49,7 +49,7 @@ Mesosphere = function(optionsObject){
             }else{
                 $(function(){
                     //attach a submit event to the form
-                    $(root.document.body).on('submit', selector, function (event) {
+                    $(document.body).on('submit', selector, function (event) {
                         event.preventDefault();
 
                         if(optionsObject.onSubmit){
