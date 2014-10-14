@@ -1,3 +1,4 @@
 mesosphere.sublime-project
 mesosphere.sublime-workspace
 .build*
+/.project
