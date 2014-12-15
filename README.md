@@ -263,6 +263,7 @@ Mesosphere({
     		   minLength:4
 			}
         }
+    }
 });
 
 ```
@@ -278,6 +279,36 @@ The list of predefined rules is the following:
 * equalsValue
 * maxFileSize
 * acceptedFileTypes
+
+#### Default Values
+
+In cases where you need to insert a default value when no value is provided (blank text boxes, unchecked checkboxes, etc.) there is the `defaultValue` option on the field description. If this is specified as a function it will call the function and assign the return value as the default, otherwise the value will be assigned directly as is.
+
+```javascript
+Mesosphere({
+    name: "testForm",
+    fields: {
+        firstname: {
+            required: true,
+            format: "alpha",
+            message: "Only letters in a first name.",
+            rules:{
+                maxLength:20,
+                minLength:4
+            },
+            defaultValue: function(formFieldsObject){
+                switch(formFieldsObject["gender"]){
+                    case "Male":
+                        return "John";
+                    case "Female":
+                        return "jane";
+                }
+            }
+        }
+    }
+});
+
+```
 
 ### Error management
 

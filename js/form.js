@@ -24,6 +24,14 @@ Form.prototype.validate = function (formFields, callback){
         // get the current value of the field that we are validating
         var fieldValue = formFieldsObject[fieldName];
 
+        if(_.isEmpty(fieldValue) && field.defaultValue){
+            if(_.isFunction(field.defaultValue)){
+                formFieldsObject[fieldName] = field.defaultValue(formFieldsObject);
+            }else{
+                formFieldsObject[fieldName] = field.defaultValue;
+            }
+        }
+
         // check if field is required (or conditional required)
         if (field.required && !(fieldValue && _(fieldValue).trim().length > 0)) {
 
