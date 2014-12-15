@@ -5,7 +5,7 @@ Package.describe({
     git: "https://github.com/copleykj/mesosphere.git"
 });
 
-Package.on_use(function (api, where) {
+Package.on_use(function (api) {
     api.versionsFrom("METEOR@0.9.0");
 
     api.use(['templating','jquery', 'underscore', "mrt:underscore-string-latest@2.3.3"], ['client', 'server']);

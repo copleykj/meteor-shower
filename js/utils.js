@@ -16,12 +16,14 @@ Utils = {
     },
     failureCallback: function(erroredFields, formHandle){
         $(".meso-error").text("");
-        _(erroredFields).each( function( value, key, errObj ) {
+        _(erroredFields).each(function(value, key) {
             formHandle.find("#"+key+"-error").addClass("meso-error").text(value.message);
         });
     },
     successCallback:function(formData, formHandle){
-        formHandle[0].reset && formHandle[0].reset();
+        if(formHandle[0].reset) {
+            formHandle[0].reset();
+        }
         $(".meso-error").text("");
         $(".meso-error").removeClass("meso-error");
     }

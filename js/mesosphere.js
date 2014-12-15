@@ -5,12 +5,15 @@ Mesosphere = function(optionsObject){
     optionsObject = _({onSuccess:Utils.successCallback, onFailure:Utils.failureCallback}).extend(optionsObject);
 
     //Make sure they've got all the info we need and they haven't provided the same form information twice
-    if(!formIdentifier)
+    if(!formIdentifier){
         throw new Error("Please specify the name of the form to validate.");
-    if(!optionsObject.fields)
+    }
+    if(!optionsObject.fields){
         throw new Error("Please specify which fields to validate.");
-    if(Mesosphere[formIdentifier])
+    }
+    if(Mesosphere[formIdentifier]){
         throw new Error("Form is already being validated");
+    }
 
     //Create a new form object scoped to Mesosphere.formName
     Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);

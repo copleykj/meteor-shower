@@ -1,0 +1,17 @@
+{
+    "globals":{
+        "$": true,
+        "_": true,
+        "Meteor":false,
+        "Template": false,
+        "Package": false,
+        "document": false,
+        "Mesosphere": true,
+        "Form": true,
+        "Utils": true,
+        "Rules": true,
+        "Transforms": true,
+        "Aggregates": true,
+        "Formats": true
+    }
+}

@@ -14,7 +14,7 @@ Form.prototype.setSelector = function(selector){
 };
 
 Form.prototype.validate = function (formFields, callback){
-    var self = this, result, validationObject;
+    var self = this, result;
     var formFieldsObject = _.isArray(formFields) ? this.formToObject(formFields) : formFields;
 
     self.erroredFields = {};
@@ -37,10 +37,12 @@ Form.prototype.validate = function (formFields, callback){
                     if (dependsOnValue && _(dependsOnValue).trim().length > 0) {
                         if (field.required.value) {
                             // even more complex case - required:{dependsOn: "otherfield", value:"USA"}
-                            if (field.required.value === dependsOnValue)
+                            if (field.required.value === dependsOnValue) {
                                 self.addFieldError(fieldName, "required");
-                        } else
+                            }
+                        } else {
                             self.addFieldError(fieldName, "required");
+                        }
                     }
                 }
 
@@ -63,7 +65,7 @@ Form.prototype.validate = function (formFields, callback){
             // check the data format
             if(field.format) {
                 if(_.isArray(fieldValue)){
-                   _(fieldValue).each( function( subValue, key ) {
+                   _(fieldValue).each(function(subValue) {
                        self.checkFormat(subValue, fieldName, field.format);
                    });
                 }else{
@@ -136,11 +138,13 @@ Form.prototype.addMessages = function(){
 
 Form.prototype.addFieldError = function(fieldName, ruleName, key){
 
-    if(!this.erroredFields[fieldName])
+    if(!this.erroredFields[fieldName]){
         this.erroredFields[fieldName] = {};
+    }
     if(key){
-        if(!this.erroredFields[fieldName][ruleName])
+        if(!this.erroredFields[fieldName][ruleName]){
             this.erroredFields[fieldName][ruleName] = [];
+        }
         this.erroredFields[fieldName][ruleName][key] = true;
     }else{
        this.erroredFields[fieldName][ruleName] = true;
@@ -157,8 +161,9 @@ Form.prototype.checkFormat = function(fieldValue, fieldName, fieldFormat) {
         format = fieldFormat;
     }
 
-    if(!format)
+    if(!format){
         throw new Error("Unknown format:"+fieldFormat);
+    }
     else {
         if( _.isRegExp(format) ) {
             // it's a regular expression
