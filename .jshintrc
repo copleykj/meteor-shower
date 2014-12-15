@@ -12,6 +12,7 @@
         "Rules": true,
         "Transforms": true,
         "Aggregates": true,
-        "Formats": true
+        "Formats": true,
+        "Tinytest": false
     }
 }

@@ -1,19 +1,14 @@
 Mesosphere({
     name: "aggregatesForm",
-    aggregate:{
+    aggregates:{
         birthDate:["join", ["year", "month", "day"], " "],
         sum:["sum", ["int1", "int2", "int3"]],
         avg:["avg", ["int1", "int2", "int3"]]
     },
     fields: {
-        birthDate: {
-            format: "alphanumeric",
-            message: "rule failed",
-            rules:{
-                minAge:13
-            }
-        }
-    }});
+
+    }
+});
 
 Mesosphere.registerRule("minAge", function(fieldValue, ruleValue){
     var birthDate = new Date(fieldValue).getTime();
@@ -34,17 +29,9 @@ Tinytest.add("aggregates tests", function (test) {
     test.isTrue(validationObject.errors === false && validationObject.formData.birthDate==="1982 November 08");
 
     validationObject = Mesosphere.aggregatesForm.validate([
-        {"name": "year", "value": "2005"},
-        {"name": "month", "value": "May"},
-        {"name": "day", "value": "16"}
-    ]);
-    test.isTrue(validationObject.errors !== false && validationObject.formData.birthDate==="2005 May 16");
-
-    validationObject = Mesosphere.aggregatesForm.validate([
         {"name": "int1", "value": "1"},
         {"name": "int2", "value": "1.5"},
         {"name": "int3", "value": "3.5"}
     ]);
-
     test.isTrue(validationObject.formData.avg==="2" && validationObject.formData.sum==="6");
 });

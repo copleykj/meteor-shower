@@ -21,7 +21,7 @@ Utils = {
         });
     },
     successCallback:function(formData, formHandle){
-        if(formHandle[0].reset) {
+        if(formHandle[0] && formHandle[0].reset) {
             formHandle[0].reset();
         }
         $(".meso-error").text("");
