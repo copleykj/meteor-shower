@@ -100,7 +100,7 @@ aggregates:{
 }
 ```
 
-Aggregation will be performed prior to validation, giving you the opportunity to validate the field created by the aggregation as well.
+Aggregation will be performed after validation and transformation. Any validation should happen on fields that the aggregation depends on to ensure valid data will be aggregated. If there is a need to transform aggregated data you can accomplish this by creating a custom aggregation function and return the transformed data. 
 
 Current aggregation functions are:
 
