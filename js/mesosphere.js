@@ -192,6 +192,10 @@
             // get the current value of the field that we are validating
             var fieldValue = formFieldsObject[fieldName];
 
+            if (_.isArray(fieldValue)) {
+                fieldValue = _.compact(fieldValue);
+            }
+
             // check if field is required (or conditional required)
             if (field.required && !(fieldValue && _(fieldValue).trim().length > 0)) {
 
@@ -423,7 +427,7 @@
                 selector = '#'+formIdentifier;
             }
 
-            
+
             Mesosphere[formIdentifier].setSelector(selector);
 
             if(!optionsObject.disableSubmit){
@@ -434,7 +438,7 @@
 
                         event.preventDefault();
 
-                        if (optionsObject.method) { 
+                        if (optionsObject.method) {
                             if(_(optionsObject.method).isFunction()){
                                 optionsObject.method(formFields, this);
                             }else{
@@ -451,7 +455,7 @@
 
                             var formFields = Utils.getFormData(this);
 
-                            if (optionsObject.method) { 
+                            if (optionsObject.method) {
                                 if(_(optionsObject.method).isFunction()){
                                     optionsObject.method(formFields);
                                 }else{
