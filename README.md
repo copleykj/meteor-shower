@@ -458,5 +458,5 @@ Your code should include unit tests & documentation changes when applicable.
 
 Ensure all unit tests pass sucessfully.
 
-    mrt test-packages ./
+    meteor test-packages ./
     
