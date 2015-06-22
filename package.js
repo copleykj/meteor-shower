@@ -18,13 +18,13 @@ Package.onUse(function (api) {
             'js/transforms.js',
             'js/utils.js',
             'js/form.js',
-            'js/mesosphere.js'
+            'js/shower.js'
         ],
         ['client', 'server']
     );
 
-    api.addFiles('css/mesosphere.css', 'client');
-    api.export('Mesosphere');
+    api.addFiles('css/shower.css', 'client');
+    api.export('Shower');
 });
 
 Package.onTest(function (api) {
@@ -38,7 +38,7 @@ Package.onTest(function (api) {
             'js/transforms.js',
             'js/utils.js',
             'js/form.js',
-            'js/mesosphere.js'
+            'js/shower.js'
         ],
         ['client', 'server']
     );

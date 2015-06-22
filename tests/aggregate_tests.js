@@ -1,4 +1,4 @@
-Mesosphere({
+Shower({
     name: "aggregatesForm",
     aggregates:{
         birthDate:["join", ["year", "month", "day"], " "],
@@ -10,7 +10,7 @@ Mesosphere({
     }
 });
 
-Mesosphere.registerRule("minAge", function(fieldValue, ruleValue){
+Shower.registerRule("minAge", function(fieldValue, ruleValue){
     var birthDate = new Date(fieldValue).getTime();
     var age = parseInt((new Date().getTime() - birthDate) / (1000 * 365 * 60 * 60 * 24), 10);
     if(age <= ruleValue){
@@ -21,14 +21,14 @@ Mesosphere.registerRule("minAge", function(fieldValue, ruleValue){
 
 Tinytest.add("aggregates tests", function (test) {
 
-    var validationObject = Mesosphere.aggregatesForm.validate([
+    var validationObject = Shower.aggregatesForm.validate([
         {"name": "year", "value": "1982"},
         {"name": "month", "value": "November"},
         {"name": "day", "value": "08"}
     ]);
     test.isTrue(validationObject.errors === false && validationObject.formData.birthDate==="1982 November 08");
 
-    validationObject = Mesosphere.aggregatesForm.validate([
+    validationObject = Shower.aggregatesForm.validate([
         {"name": "int1", "value": "1"},
         {"name": "int2", "value": "1.5"},
         {"name": "int3", "value": "3.5"}

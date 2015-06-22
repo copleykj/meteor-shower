@@ -1,4 +1,4 @@
-Mesosphere({
+Shower({
     name: "transForm",
     fields: {
         alpha1: {
@@ -15,13 +15,13 @@ Mesosphere({
 
 Tinytest.add("transforms tests", function (test) {
 
-    var validationObject = Mesosphere.transForm.validate([
+    var validationObject = Shower.transForm.validate([
         {"name": "alpha1", "value": "  olivier   refalo  "}
     ]);
     test.isTrue(validationObject.errors === false && validationObject.formData.alpha1==="Olivier refalo");
 
 
-    validationObject = Mesosphere.transForm.validate([
+    validationObject = Shower.transForm.validate([
         {"name": "alpha2", "value": "  capitalize dash-CamelCase_underscore trim  "}
     ]);
 

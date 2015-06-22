@@ -25,10 +25,10 @@ Rules = {
     },
     equalsField: function(fieldValue, ruleValue, fieldName, formFieldsObject) {
         return formFieldsObject[ruleValue] == fieldValue
-    }, 
+    },
     notEqualsField: function(fieldValue, ruleValue, fieldName, formFieldsObject) {
         return formFieldsObject[ruleValue] != fieldValue
-    }, 
+    },
     maxFileSize: function(fieldValue, ruleValue) {
         return this.maxValue(fieldValue.fileSize, ruleValue);
     },

@@ -1,4 +1,4 @@
-Mesosphere({
+Shower({
     name: "defaults",
     fields: {
         firstName: {
@@ -20,7 +20,7 @@ Mesosphere({
 
 Tinytest.add("default value tests", function (test) {
 
-    var validationObject = Mesosphere.defaults.validate([
+    var validationObject = Shower.defaults.validate([
         {"name": "firstName", "value": ""},
         {"name": "lastName", "value": ""},
         {"name": "gender", "value": "Female"}

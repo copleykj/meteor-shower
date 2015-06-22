@@ -1,4 +1,4 @@
-Mesosphere = function(optionsObject){
+Shower = function(optionsObject){
     var selector = "";
     var formIdentifier = optionsObject.name || optionsObject.id;
 
@@ -11,12 +11,12 @@ Mesosphere = function(optionsObject){
     if(!optionsObject.fields){
         throw new Error("Please specify which fields to validate.");
     }
-    if(Mesosphere[formIdentifier]){
+    if(Shower[formIdentifier]){
         throw new Error("Form is already being validated");
     }
 
-    //Create a new form object scoped to Mesosphere.formName
-    Mesosphere[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);
+    //Create a new form object scoped to Shower.formName
+    Shower[formIdentifier] = new Form(optionsObject.fields, optionsObject.aggregates, optionsObject.removeFields, optionsObject.onSuccess, optionsObject.onFailure);
 
     //if this is the browser, set up a submit event handler.
     if(Meteor.isClient){
@@ -34,8 +34,8 @@ Mesosphere = function(optionsObject){
 
             if(optionsObject.template && _(optionsObject.template).isString()){
                 events['submit '+ selector] = function (event) {
-                    var formFields = Mesosphere.Utils.getFormData(event.target);
-                    Mesosphere[formIdentifier].setSelector(event.target);
+                    var formFields = Shower.Utils.getFormData(event.target);
+                    Shower[formIdentifier].setSelector(event.target);
                     event.preventDefault();
 
                     if(optionsObject.onSubmit){
@@ -60,7 +60,7 @@ Mesosphere = function(optionsObject){
                         }
 
                         var formFields = Utils.getFormData(this);
-                        Mesosphere[formIdentifier].setSelector(event.target);
+                        Shower[formIdentifier].setSelector(event.target);
 
                         if(_(optionsObject.method).isFunction()){
                             optionsObject.method(formFields);
@@ -78,36 +78,36 @@ Mesosphere = function(optionsObject){
     }
 };
 
-Mesosphere.Rules = Rules;
-Mesosphere.Transforms = Transforms;
-Mesosphere.Formats = Formats;
-Mesosphere.Aggregates = Aggregates;
-Mesosphere.Utils = Utils;
+Shower.Rules = Rules;
+Shower.Transforms = Transforms;
+Shower.Formats = Formats;
+Shower.Aggregates = Aggregates;
+Shower.Utils = Utils;
 
-Mesosphere.registerAggregate = function (name, fn) {
-    if (Mesosphere.Aggregates[name]) {
+Shower.registerAggregate = function (name, fn) {
+    if (Shower.Aggregates[name]) {
         throw new Error(name + " is already defined as a aggregate.");
     }
-    Mesosphere.Aggregates[name] = fn;
+    Shower.Aggregates[name] = fn;
 };
 
-Mesosphere.registerFormat = function (name, fn) {
-    if (Mesosphere.Formats[name]) {
+Shower.registerFormat = function (name, fn) {
+    if (Shower.Formats[name]) {
         throw new Error(name + " is already defined as a format.");
     }
-    Mesosphere.Formats[name] = fn;
+    Shower.Formats[name] = fn;
 };
 
-Mesosphere.registerRule = function (name, fn) {
-  if (Mesosphere.Rules[name]) {
+Shower.registerRule = function (name, fn) {
+  if (Shower.Rules[name]) {
     throw new Error(name + " is already defined as a rule.");
   }
-  Mesosphere.Rules[name] = fn;
+  Shower.Rules[name] = fn;
 };
 
-Mesosphere.registerTransform = function (name, fn) {
-  if (Mesosphere.Transforms[name]) {
+Shower.registerTransform = function (name, fn) {
+  if (Shower.Transforms[name]) {
     throw new Error(name + " is already defined as a transform.");
   }
-  Mesosphere.Transforms[name] = fn;
+  Shower.Transforms[name] = fn;
 };
