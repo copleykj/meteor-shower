@@ -1,7 +1,7 @@
 Package.describe({
     name:"copleykj:shower",
     summary: "A form-data validation and transformation package for Meteor",
-    version: "0.1.14",
+    version: "0.1.15",
     git: "https://github.com/copleykj/meteor-shower.git"
 });
 
