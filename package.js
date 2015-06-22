@@ -1,8 +1,8 @@
 Package.describe({
-    name:"copleykj:mesosphere",
+    name:"copleykj:shower",
     summary: "A form-data validation and transformation package for Meteor",
     version: "0.1.14",
-    git: "https://github.com/copleykj/mesosphere.git"
+    git: "https://github.com/copleykj/meteor-shower.git"
 });
 
 Package.onUse(function (api) {
