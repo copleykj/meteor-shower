@@ -1,4 +1,5 @@
 # Meteor Shower :-)
+__*Deprecacation Warning:*__  I currently recommend using simple schema for all validation as it integrates with your collections and allows you to fully secure and use client side operations in totality.
 
 [![Gitter chat](https://badges.gitter.im/copleykj/Shower.png)](https://gitter.im/copleykj/Shower)
 
